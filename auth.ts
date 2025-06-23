@@ -22,6 +22,7 @@ export const {
   handlers: { GET, POST },
   auth,
 } = NextAuth({
+  trustHost: true, // TODO: Test with docker
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
   pages: {
@@ -52,7 +53,6 @@ export const {
 
       return session;
     },
-
     async jwt({ token }) {
       if (!token.sub) return token;
 

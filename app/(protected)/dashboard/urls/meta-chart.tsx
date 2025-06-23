@@ -7,12 +7,21 @@ import { UrlMeta, User } from "@prisma/client";
 import { VisSingleContainer, VisTooltip, VisTopoJSONMap } from "@unovis/react";
 import { TopoJSONMap } from "@unovis/ts";
 import { WorldMapTopoJSON } from "@unovis/ts/maps";
+import { useTranslations } from "next-intl";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import useSWR from "swr";
 
-import { TeamPlanQuota } from "@/config/team";
-import { getCountryName, getDeviceVendor } from "@/lib/contries";
+import {
+  getBotName,
+  getCountryName,
+  getDeviceVendor,
+  getEngineName,
+  getLanguageName,
+  getRegionName,
+} from "@/lib/contries";
 import { DATE_DIMENSION_ENUMS } from "@/lib/enums";
-import { isLink, removeUrlSuffix, timeAgo } from "@/lib/utils";
+import { fetcher, isLink, removeUrlSuffix } from "@/lib/utils";
+import { useElementSize } from "@/hooks/use-element-size";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -30,10 +39,13 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Icons } from "@/components/shared/icons";
+import { TimeAgoIntl } from "@/components/shared/time-ago";
 
 const chartConfig = {
   pv: {
@@ -116,7 +128,15 @@ function generateStatsList(
         ? getCountryName(rawValue as string) // 国家代码转为国家名称
         : dimension === "device"
           ? getDeviceVendor(rawValue as string) // 设备型号转为厂商名称
-          : rawValue; // 其他维度直接使用原始值
+          : dimension === "engine"
+            ? getEngineName(rawValue as string) // 引擎名称
+            : dimension === "region"
+              ? getRegionName(rawValue as string) // 区域名称
+              : dimension === "lang"
+                ? getLanguageName(rawValue as string) // 语言名称
+                : dimension === "isBot"
+                  ? getBotName(rawValue as boolean) // 是否为机器人
+                  : rawValue; // 其他维度直接使用原始值
 
     const click = record.click || 0; // 确保 click 是数字，默认 0 如果未定义
 
@@ -153,20 +173,26 @@ export function DailyPVUVChart({
   setTimeRange: React.Dispatch<React.SetStateAction<string>>;
   user: Pick<User, "id" | "name" | "team">;
 }) {
+  const { ref: wrapperRef, width: wrapperWidth } = useElementSize();
   const [activeChart, setActiveChart] =
     React.useState<keyof typeof chartConfig>("pv");
+
+  const t = useTranslations("Components");
+
+  const { data: plan } = useSWR<{ slAnalyticsRetention: number }>(
+    `/api/plan?team=${user.team}`,
+    fetcher,
+  );
 
   const processedData = processUrlMeta(data).map((entry) => ({
     date: entry.date,
     pv: entry.clicks,
     uv: new Set(entry.ips).size,
   }));
-  // .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   const dataTotal = calculateUVAndPV(data);
 
   const latestEntry = data[data.length - 1];
-  const latestDate = timeAgo(latestEntry.updatedAt);
   const latestFrom = [
     latestEntry.city ? decodeURIComponent(latestEntry.city) : "",
     latestEntry.country ? `(${getCountryName(latestEntry.country)})` : "",
@@ -213,47 +239,59 @@ export function DailyPVUVChart({
   const deviceStats = generateStatsList(data, "device");
   const browserStats = generateStatsList(data, "browser");
   const countryStats = generateStatsList(data, "country");
+  const osStats = generateStatsList(data, "os");
+  const cpuStats = generateStatsList(data, "cpu");
+  const engineStats = generateStatsList(data, "engine");
+  const languageStats = generateStatsList(data, "lang");
+  const regionStats = generateStatsList(data, "region");
+  const isBotStats = generateStatsList(data, "isBot");
+
+  const lastVisitorInfo = t.rich("last-visitor-info", {
+    location: latestFrom,
+    timeAgo: () => <TimeAgoIntl date={latestEntry.updatedAt} />,
+  });
 
   return (
-    <Card className="rounded-t-none border-t-0">
+    <Card>
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-2 sm:py-3">
-          <CardTitle>Link Analytics</CardTitle>
-          <CardDescription>
-            Last visitor from {latestFrom} about {latestDate}.
-          </CardDescription>
+          <CardTitle>{t("Link Analytics")}</CardTitle>
+          <CardDescription>{lastVisitorInfo}</CardDescription>
         </div>
         <div className="flex items-center">
-          <Select
-            onValueChange={(value: string) => {
-              setTimeRange(value);
-            }}
-            name="time range"
-            defaultValue={timeRange}
-          >
-            <SelectTrigger className="mx-4 w-full shadow-inner">
-              <SelectValue placeholder="Select a time" />
-            </SelectTrigger>
-            <SelectContent>
-              {DATE_DIMENSION_ENUMS.map((e) => (
-                <SelectItem
-                  disabled={
-                    e.key > TeamPlanQuota[user.team!].SL_AnalyticsRetention
-                  }
-                  key={e.value}
-                  value={e.value}
-                >
-                  <span className="flex items-center gap-1">
-                    {e.label}
-                    {e.key >
-                      TeamPlanQuota[user.team!].SL_AnalyticsRetention && (
-                      <Icons.crown className="size-3" />
+          {plan && (
+            <Select
+              onValueChange={(value: string) => {
+                setTimeRange(value);
+              }}
+              name="time range"
+              defaultValue={timeRange}
+            >
+              <SelectTrigger className="mx-4 w-full min-w-28 shadow-inner">
+                <SelectValue placeholder="Select a time" />
+              </SelectTrigger>
+              <SelectContent>
+                {DATE_DIMENSION_ENUMS.map((e, i) => (
+                  <div key={e.value}>
+                    <SelectItem
+                      disabled={e.key > plan.slAnalyticsRetention}
+                      value={e.value}
+                    >
+                      <span className="flex items-center gap-1">
+                        {t(e.label)}
+                        {e.key > plan.slAnalyticsRetention && (
+                          <Icons.crown className="size-3" />
+                        )}
+                      </span>
+                    </SelectItem>
+                    {i % 2 === 0 && i !== DATE_DIMENSION_ENUMS.length - 1 && (
+                      <SelectSeparator />
                     )}
-                  </span>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+                  </div>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
           {["pv", "uv"].map((key) => {
             const chart = key as keyof typeof chartConfig;
             return (
@@ -263,8 +301,8 @@ export function DailyPVUVChart({
                 className="relative z-30 flex flex-1 flex-col items-center justify-center gap-1 border-t px-6 py-2 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-3"
                 onClick={() => setActiveChart(chart)}
               >
-                <span className="text-sm font-semibold text-muted-foreground">
-                  {chartConfig[chart].label}
+                <span className="text-nowrap text-sm font-semibold text-muted-foreground">
+                  {t(chartConfig[chart].label)}
                 </span>
                 <span className="text-lg font-bold leading-none">
                   {dataTotal[key as keyof typeof dataTotal].toLocaleString()}
@@ -274,7 +312,7 @@ export function DailyPVUVChart({
           })}
         </div>
       </CardHeader>
-      <CardContent className="px-2 sm:p-6">
+      <CardContent className="px-2 sm:p-6" ref={wrapperRef}>
         <ChartContainer
           config={chartConfig}
           className="aspect-auto h-[225px] w-full"
@@ -346,9 +384,6 @@ export function DailyPVUVChart({
                 />
               }
             />
-            {/* <Bar dataKey="uv" fill={`var(--color-uv)`} stackId="a" />
-            <Bar dataKey="pv" fill={`var(--color-pv)`} stackId="a" /> */}
-
             <Area
               type="monotone"
               dataKey="uv"
@@ -366,31 +401,103 @@ export function DailyPVUVChart({
           </AreaChart>
         </ChartContainer>
 
-        <VisSingleContainer data={{ areas: areaData }}>
-          <VisTopoJSONMap
-            topojson={WorldMapTopoJSON}
-            // pointRadius={1.6}
-            // mapFitToPoints={true}
-          />
+        <VisSingleContainer
+          data={{ areas: areaData }}
+          width={wrapperWidth * 0.99}
+        >
+          <VisTopoJSONMap topojson={WorldMapTopoJSON} />
           <VisTooltip triggers={triggers} />
         </VisSingleContainer>
 
         <div className="my-5 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {refererStats.length > 0 && (
-            <StatsList data={refererStats} title="Referrers" />
-          )}
-          {countryStats.length > 0 && (
-            <StatsList data={countryStats} title="Countries" />
-          )}
-          {cityStats.length > 0 && (
-            <StatsList data={cityStats} title="Cities" />
-          )}
-          {browserStats.length > 0 && (
-            <StatsList data={browserStats} title="Browsers" />
-          )}
-          {deviceStats.length > 0 && (
-            <StatsList data={deviceStats} title="Devices" />
-          )}
+          {/* Referrers、isBotStats */}
+          <Tabs defaultValue="referrer">
+            <TabsList>
+              <TabsTrigger value="referrer">{t("Referrers")}</TabsTrigger>
+              <TabsTrigger value="isBot">{t("Traffic Type")}</TabsTrigger>
+            </TabsList>
+            <TabsContent className="h-[calc(100%-40px)]" value="referrer">
+              {refererStats.length > 0 && (
+                <StatsList data={refererStats} title="Referrers" />
+              )}
+            </TabsContent>
+            <TabsContent className="h-[calc(100%-40px)]" value="isBot">
+              {isBotStats.length > 0 && (
+                <StatsList data={isBotStats} title="Is Bot" />
+              )}
+            </TabsContent>
+          </Tabs>
+          {/* 国家、城市 */}
+          <Tabs defaultValue="country">
+            <TabsList>
+              <TabsTrigger value="country">{t("Country")}</TabsTrigger>
+              <TabsTrigger value="city">{t("City")}</TabsTrigger>
+            </TabsList>
+            <TabsContent className="h-[calc(100%-40px)]" value="country">
+              {countryStats.length > 0 && (
+                <StatsList data={countryStats} title="Countries" />
+              )}
+            </TabsContent>
+            <TabsContent className="h-[calc(100%-40px)]" value="city">
+              {cityStats.length > 0 && (
+                <StatsList data={cityStats} title="Cities" />
+              )}
+            </TabsContent>
+          </Tabs>
+          {/* browserStats、engineStats */}
+          <Tabs defaultValue="browser">
+            <TabsList>
+              <TabsTrigger value="browser">{t("Browser")}</TabsTrigger>
+              <TabsTrigger value="engine">{t("Engine")}</TabsTrigger>
+            </TabsList>
+            <TabsContent className="h-[calc(100%-40px)]" value="browser">
+              {browserStats.length > 0 && (
+                <StatsList data={browserStats} title="Browsers" />
+              )}
+            </TabsContent>
+            <TabsContent className="h-[calc(100%-40px)]" value="engine">
+              {engineStats.length > 0 && (
+                <StatsList data={engineStats} title="Engines" />
+              )}
+            </TabsContent>
+          </Tabs>
+
+          {/* Languages、regionStats */}
+          <Tabs className="h-full" defaultValue="language">
+            <TabsList>
+              <TabsTrigger value="language">{t("Language")}</TabsTrigger>
+              <TabsTrigger value="region">{t("Region")}</TabsTrigger>
+            </TabsList>
+            <TabsContent className="h-[calc(100%-40px)]" value="language">
+              {languageStats.length > 0 && (
+                <StatsList data={languageStats} title="Languages" />
+              )}
+            </TabsContent>
+            <TabsContent className="h-[calc(100%-40px)]" value="region">
+              {regionStats.length > 0 && (
+                <StatsList data={regionStats} title="Regions" />
+              )}
+            </TabsContent>
+          </Tabs>
+          {/* deviceStats、osStats、cpuStats */}
+          <Tabs defaultValue="device">
+            <TabsList>
+              <TabsTrigger value="device">{t("Device")}</TabsTrigger>
+              <TabsTrigger value="os">{t("OS")}</TabsTrigger>
+              <TabsTrigger value="cpu">CPU</TabsTrigger>
+            </TabsList>
+            <TabsContent className="h-[calc(100%-40px)]" value="device">
+              {deviceStats.length > 0 && (
+                <StatsList data={deviceStats} title="Devices" />
+              )}
+            </TabsContent>
+            <TabsContent className="h-[calc(100%-40px)]" value="os">
+              {osStats.length > 0 && <StatsList data={osStats} title="OS" />}
+            </TabsContent>
+            <TabsContent className="h-[calc(100%-40px)]" value="cpu">
+              {cpuStats.length > 0 && <StatsList data={cpuStats} title="CPU" />}
+            </TabsContent>
+          </Tabs>
         </div>
       </CardContent>
     </Card>
@@ -400,14 +507,17 @@ export function DailyPVUVChart({
 export function StatsList({ data, title }: { data: Stat[]; title: string }) {
   const [showAll, setShowAll] = useState(false);
   const displayedData = showAll ? data.slice(0, 50) : data.slice(0, 8);
-
+  const t = useTranslations("Components");
   return (
-    <div className="rounded-lg border p-4">
-      <h1 className="text-lg font-bold">{title}</h1>
+    <div className="h-full rounded-lg border">
+      <div className="flex items-center justify-between border-b px-5 py-2 text-xs font-medium text-muted-foreground">
+        <span>{t("Name")}</span>
+        <span className="">{t("Visitors")}</span>
+      </div>
       <div
-        className={`scrollbar-hidden overflow-hidden overflow-y-auto transition-all duration-500 ease-in-out`}
+        className={`scrollbar-hidden overflow-hidden overflow-y-auto px-4 pb-4 pt-2 transition-all duration-500 ease-in-out`}
         style={{
-          maxHeight: "18rem", // 动态计算最大高度
+          maxHeight: "18rem",
         }}
       >
         {displayedData.map((ref) => (
@@ -449,7 +559,7 @@ export function StatsList({ data, title }: { data: Stat[]; title: string }) {
       </div>
 
       {data.length > 8 && (
-        <div className="mt-3 text-center">
+        <div className="mb-3 mt-1 text-center">
           <Button
             variant={"outline"}
             onClick={() => setShowAll(!showAll)}

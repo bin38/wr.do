@@ -1,4 +1,5 @@
 import type { NextAuthConfig } from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 import Github from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import Resend from "next-auth/providers/resend";
@@ -47,7 +48,7 @@ export default {
     }),
     Resend({
       apiKey: env.RESEND_API_KEY,
-      from: "wrdo <support@wr.do>",
+      from: env.RESEND_FROM_EMAIL || "wrdo <support@wr.do>",
       async sendVerificationRequest({ identifier: email, url, provider }) {
         try {
           const { error } = await resend.emails.send({
@@ -67,5 +68,29 @@ export default {
       },
     }),
     linuxDoProvider,
+    Credentials({
+      name: "Credentials",
+      credentials: {
+        name: { label: "name", type: "text" },
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const res = await fetch(
+          process.env.AUTH_URL + "/api/auth/credentials",
+          {
+            method: "POST",
+            body: JSON.stringify(credentials),
+          },
+        );
+        // console.log("[res]", res);
+
+        if (res.ok) {
+          return res.json();
+        }
+
+        return null;
+      },
+    }),
   ],
 } satisfies NextAuthConfig;

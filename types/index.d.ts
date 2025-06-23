@@ -16,9 +16,6 @@ export type SiteConfig = {
     discord: string;
     oichat: string;
   };
-  openSignup: boolean;
-  shortDomains: string[];
-  emailDomains: string[];
   emailR2Domain: string;
 };
 
@@ -49,3 +46,5 @@ export type DocsConfig = {
   mainNav: MainNavItem[];
   sidebarNav: SidebarNavItem[];
 };
+
+// declare module "globe.gl";

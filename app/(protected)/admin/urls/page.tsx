@@ -4,11 +4,10 @@ import { getCurrentUser } from "@/lib/session";
 import { constructMetadata } from "@/lib/utils";
 import { DashboardHeader } from "@/components/dashboard/header";
 
-import LiveLog from "../../dashboard/urls/live-logs";
 import UserUrlsList from "../../dashboard/urls/url-list";
 
 export const metadata = constructMetadata({
-  title: "Short URLs - WR.DO",
+  title: "Short URLs",
   description: "List and manage records.",
 });
 
@@ -20,11 +19,12 @@ export default async function DashboardPage() {
   return (
     <>
       <DashboardHeader
-        heading="Manage&nbsp;Short&nbsp;URLs"
-        text="List and manage short urls."
+        heading="Manage Short URLs"
+        text="List and manage short urls"
         link="/docs/short-urls"
-        linkText="short urls."
+        linkText="short urls"
       />
+
       <UserUrlsList
         user={{
           id: user.id,
@@ -35,7 +35,6 @@ export default async function DashboardPage() {
         }}
         action="/api/url/admin"
       />
-      <LiveLog admin={true} />
     </>
   );
 }

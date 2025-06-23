@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ForwardEmail } from "@prisma/client";
 import {
   File,
@@ -11,15 +11,10 @@ import {
   FileText,
   FileVideo,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { siteConfig } from "@/config/site";
-import {
-  cn,
-  downloadFile,
-  downloadFileFromUrl,
-  formatDate,
-  formatFileSize,
-} from "@/lib/utils";
+import { cn, downloadFile, formatDate, formatFileSize } from "@/lib/utils";
 import { Icons } from "@/components/shared/icons";
 
 import { BlurImg } from "../shared/blur-image";
@@ -31,6 +26,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import EmailViewer from "./EmailViewer";
 
 interface EmailDetailProps {
   email: ForwardEmail | undefined;
@@ -90,7 +86,8 @@ export default function EmailDetail({
   onClose,
   onMarkAsRead,
 }: EmailDetailProps) {
-  const [previewImage, setPreviewImage] = useState<string | null>(null); // 控制图片预览 Modal
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const t = useTranslations("Email");
 
   function getFileIcon(type: string): React.ComponentType<any> {
     const icon = Object.keys(fileTypeIcons).find((key) =>
@@ -183,7 +180,8 @@ export default function EmailDetail({
           <TooltipProvider>
             <Tooltip delayDuration={100}>
               <TooltipTrigger className="line-clamp-2 text-wrap text-left text-xs">
-                <strong>From:</strong> {email.fromName} &lt;{email.from}&gt;
+                <strong>{t("From")}:</strong> {email.fromName} &lt;{email.from}
+                &gt;
               </TooltipTrigger>
               <TooltipContent side="bottom" className="w-60 text-wrap text-xs">
                 {email.fromName} <br />
@@ -192,19 +190,19 @@ export default function EmailDetail({
             </Tooltip>
           </TooltipProvider>
           <p className="text-xs">
-            <strong>To:</strong> {email.to}
+            <strong>{t("To")}:</strong> {email.to}
           </p>
-          {email.replyTo && (
+          {email.replyTo && email.replyTo !== '""' && (
             <p className="text-xs">
-              <strong>Reply-To:</strong> {email.replyTo}
+              <strong>{t("Reply-To")}:</strong> {email.replyTo}
             </p>
           )}
           <p className="text-xs">
-            <strong>Date:</strong> {formatDate(email.date as any)}
+            <strong>{t("Date")}:</strong> {formatDate(email.date as any)}
           </p>
           {attachments.length > 0 && (
             <p className="text-xs">
-              <strong>Attachments</strong>: {attachments.length}
+              <strong>{t("Attachments")}</strong>: {attachments.length}
             </p>
           )}
         </div>
@@ -218,18 +216,19 @@ export default function EmailDetail({
         </Button>
       </div>
 
-      <div className="scrollbar-hidden flex h-full flex-col justify-between overflow-y-auto px-2 py-3">
-        <div
+      <div className="scrollbar-hidden flex h-full flex-col justify-between overflow-y-auto">
+        {/* <div
           className=""
           dangerouslySetInnerHTML={{
             __html: processContent(email.html || email.text || ""),
           }}
-        />
+        /> */}
+        <EmailViewer email={processContent(email.html || email.text || "")} />
 
         {attachments.length > 0 && (
-          <div className="mt-auto border-t border-dashed py-3">
+          <div className="mt-auto border-t border-dashed px-2 py-3">
             <h3 className="mb-2 text-sm font-semibold text-neutral-700 dark:text-neutral-400">
-              Attachments ({attachments.length})
+              {t("Attachments")} ({attachments.length})
             </h3>
             <div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
               {attachments.map((attachment, index) => {
@@ -270,11 +269,11 @@ export default function EmailDetail({
                     </div>
                     <Button
                       onClick={() => handleDownload(attachment)}
-                      className="absolute right-0 top-0 hidden animate-fade-in px-2 group-hover:block"
+                      className="absolute right-1 top-1 hidden h-7 animate-fade-in px-2 group-hover:block"
                       size="sm"
-                      variant="ghost"
+                      variant="default"
                     >
-                      <Icons.download className="size-4" />
+                      <Icons.download className="size-3" />
                     </Button>
                   </div>
                 );

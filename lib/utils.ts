@@ -1,12 +1,9 @@
 import crypto from "crypto";
 import { Metadata } from "next";
-import { geolocation } from "@vercel/functions";
 import { clsx, type ClassValue } from "clsx";
 import ms from "ms";
 import { twMerge } from "tailwind-merge";
-import UAParser from "ua-parser-js";
 
-import { env } from "@/env.mjs";
 import { siteConfig } from "@/config/site";
 
 import { TIME_RANGES } from "./enums";
@@ -35,7 +32,9 @@ export function constructMetadata({
       "Cloudflare",
       "DNS",
       "DNS Records",
+      "Subdomains",
       "Short Link",
+      "Email",
       "Open API",
       "Screenshot API",
     ],
@@ -88,11 +87,18 @@ export function formatDate(input: string | number): string {
   });
 }
 
-export function absoluteUrl(path: string) {
-  return `${env.NEXT_PUBLIC_APP_URL}${path}`;
+export function formatTime(input: string | number): string {
+  const date = new Date(input);
+
+  const locale = navigator.language || "en-US";
+
+  return date.toLocaleTimeString(locale, {
+    // second: "numeric",
+    minute: "numeric",
+    hour: "numeric",
+  });
 }
 
-// Utils from precedent.dev
 export const timeAgo = (timestamp: Date, timeOnly?: boolean): string => {
   if (!timestamp) return "never";
   return `${ms(Date.now() - new Date(timestamp).getTime())}${
@@ -240,31 +246,13 @@ export function removeUrlSuffix(url: string): string {
   return url.startsWith("http") ? url.split("//")[1] : url;
 }
 
-export function getIpInfo(req: Request) {
-  const geo = geolocation(req);
-  const ua = req.headers.get("user-agent") || "";
-  const parser = new UAParser();
-  parser.setUA(ua);
-  const browser = parser.getBrowser();
-  const device = parser.getDevice();
-  const referer = req.headers.get("referer") || "(None)";
-  const ip = req.headers.get("X-Forwarded-For") || "127.0.0.1";
-  const userLanguage =
-    req.headers.get("accept-language")?.split(",")[0] || "en-US";
-
-  return {
-    referer,
-    ip,
-    city: geo?.city || "",
-    region: geo?.region || "",
-    country: geo?.country || "",
-    latitude: geo?.latitude || "",
-    longitude: geo?.longitude || "",
-    flag: geo?.flag,
-    lang: userLanguage,
-    device: device.model || "Unknown",
-    browser: browser.name || "Unknown",
-  };
+export function extractHostname(url: string): string {
+  try {
+    const urlObject = new URL(url);
+    return urlObject.hostname;
+  } catch (error) {
+    return "";
+  }
 }
 
 export function toCamelCase(str: string) {
@@ -387,4 +375,25 @@ export function extractHost(url: string): string {
   const regex = /^(?:https?:\/\/)?([^\/?:#]+)/i;
   const match = url.match(regex);
   return match ? match[1] : "";
+}
+
+export function hashPassword(password: string): string {
+  const salt = crypto.randomBytes(16).toString("hex");
+  const hash = crypto.scryptSync(password, salt, 64).toString("hex");
+  return `${salt}:${hash}`;
+}
+
+/**
+ * 验证密码
+ * @param password 用户输入的密码
+ * @param storedPassword 数据库中存储的加密密码
+ * @returns 是否匹配
+ */
+export function verifyPassword(
+  password: string,
+  storedPassword: string,
+): boolean {
+  const [salt, hash] = storedPassword.split(":");
+  const hashToVerify = crypto.scryptSync(password, salt, 64).toString("hex");
+  return hash === hashToVerify;
 }

@@ -2,11 +2,13 @@
 
 import * as React from "react";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import useSWR from "swr";
 
 import { DATE_DIMENSION_ENUMS } from "@/lib/enums";
 import { cn, fetcher, nFormatter } from "@/lib/utils";
+import { useElementSize } from "@/hooks/use-element-size";
 import {
   Card,
   CardContent,
@@ -21,11 +23,11 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-import CountUp from "../dashboard/count-up";
 import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
@@ -62,9 +64,12 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function InteractiveBarChart() {
+  const { ref: wrapperRef, width: wrapperWidth } = useElementSize();
   const [timeRange, setTimeRange] = useState<string>("7d");
   const [activeChart, setActiveChart] =
     React.useState<keyof typeof chartConfig>("users");
+
+  const t = useTranslations("Components");
 
   const { data, isLoading } = useSWR<{
     list: [
@@ -108,8 +113,8 @@ export function InteractiveBarChart() {
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
         <div className="flex w-full flex-1 justify-between gap-2 px-6 py-5 sm:flex-col sm:py-6">
           <div className="flex flex-col justify-center gap-1">
-            <CardTitle>Data Increase</CardTitle>
-            <CardDescription>Showing data increase in:</CardDescription>
+            <CardTitle>{t("Data Increase")}</CardTitle>
+            <CardDescription>{t("Showing data increase in")}:</CardDescription>
           </div>
           <Select
             onValueChange={(value: string) => {
@@ -122,16 +127,19 @@ export function InteractiveBarChart() {
               <SelectValue placeholder="Select a time" />
             </SelectTrigger>
             <SelectContent>
-              {DATE_DIMENSION_ENUMS.map((e) => (
-                <SelectItem key={e.value} value={e.value}>
-                  {e.label}
-                </SelectItem>
+              {DATE_DIMENSION_ENUMS.map((e, i) => (
+                <div key={e.value}>
+                  <SelectItem value={e.value}>{t(e.label)}</SelectItem>
+                  {i % 2 === 0 && i !== DATE_DIMENSION_ENUMS.length - 1 && (
+                    <SelectSeparator />
+                  )}
+                </div>
               ))}
             </SelectContent>
           </Select>
         </div>
 
-        <div className="flex">
+        <div className="grid grid-cols-3 sm:grid-cols-6">
           {["users", "records", "urls", "emails", "inbox", "sends"].map(
             (key) => {
               const chart = key as keyof typeof chartConfig;
@@ -141,13 +149,13 @@ export function InteractiveBarChart() {
                 <button
                   key={chart}
                   data-active={activeChart === chart}
-                  className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-l border-t p-4 text-left data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:p-6"
+                  className="relative z-30 flex flex-col justify-center gap-1 border-l border-t p-3 text-left transition-colors hover:bg-muted/30 data-[active=true]:bg-muted/50 sm:border-t-0 sm:p-4"
                   onClick={() => setActiveChart(chart)}
                 >
                   <span className="text-xs text-muted-foreground">
-                    {chartConfig[chart].label}
+                    {t(chartConfig[chart].label)}
                   </span>
-                  <span className="text-lg font-bold leading-none sm:text-3xl">
+                  <span className="text-base font-bold leading-none sm:text-lg">
                     {nFormatter(data.total[key])}
                   </span>
                   <span
@@ -167,7 +175,7 @@ export function InteractiveBarChart() {
           )}
         </div>
       </CardHeader>
-      <CardContent className="px-2 sm:p-6">
+      <CardContent ref={wrapperRef} className="px-2 sm:p-6">
         <ChartContainer
           config={chartConfig}
           className="aspect-auto h-[200px] w-full"
@@ -175,6 +183,7 @@ export function InteractiveBarChart() {
           <BarChart
             accessibilityLayer
             data={data.list}
+            width={wrapperWidth}
             margin={{
               left: 12,
               right: 12,

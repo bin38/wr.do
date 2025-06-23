@@ -18,9 +18,10 @@ import {
   Copy,
   Crown,
   Download,
+  EllipsisVertical,
+  Eye,
   File,
   FileText,
-  Globe,
   GlobeLock,
   Heading1,
   HelpCircle,
@@ -28,9 +29,10 @@ import {
   Image,
   Inbox,
   Laptop,
+  LayoutGrid,
   LayoutPanelLeft,
-  LineChart,
   Link,
+  List,
   ListChecks,
   ListFilter,
   Loader2,
@@ -45,7 +47,6 @@ import {
   MessagesSquare,
   Moon,
   MoreVertical,
-  MousePointerClick,
   Package,
   Paintbrush,
   Plus,
@@ -58,9 +59,12 @@ import {
   Trash2,
   Unplug,
   User,
+  UserCog,
   Users,
   X,
 } from "lucide-react";
+
+import { cn } from "@/lib/utils";
 
 import LogoIcon from "./logo";
 
@@ -83,10 +87,14 @@ export const Icons = {
   camera: Camera,
   calendar: Calendar,
   crown: Crown,
+  eye: Eye,
   lock: LockKeyhole,
+  list: List,
+  layoutGrid: LayoutGrid,
   unLock: LockKeyholeOpen,
   listFilter: ListFilter,
   botMessageSquare: BotMessageSquare,
+  moreVertical: EllipsisVertical,
   pwdKey: ({ ...props }: LucideProps) => (
     <svg
       height="18"
@@ -141,7 +149,74 @@ export const Icons = {
   download: Download,
   ellipsis: MoreVertical,
   paintbrush: Paintbrush,
-  mousePointerClick: MousePointerClick,
+  mousePointerClick: ({ className, ...props }: LucideProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`group cursor-pointer transition-transform duration-75 hover:scale-110 ${className || ""}`}
+      {...props}
+    >
+      {/* 点击波纹线条 - 默认显示 */}
+      <g className="group-hover:hidden">
+        <path d="M14 4.1 12 6" />
+        <path d="m5.1 8-2.9-.8" />
+        <path d="m6 12-1.9 2" />
+        <path d="M7.2 2.2 8 5.1" />
+      </g>
+
+      {/* 点击波纹线条 - 动画版本 */}
+      <g className="opacity-0 group-hover:opacity-100">
+        <path
+          d="M14 4.1 12 6"
+          className="transition-all duration-500 group-hover:animate-ping"
+          style={{
+            animationDelay: "0.1s",
+            transformOrigin: "13px 5px",
+          }}
+        />
+        <path
+          d="m5.1 8-2.9-.8"
+          className="transition-all duration-500 group-hover:animate-ping"
+          style={{
+            animationDelay: "0.2s",
+            transformOrigin: "4px 7.6px",
+          }}
+        />
+        <path
+          d="m6 12-1.9 2"
+          className="transition-all duration-500 group-hover:animate-ping"
+          style={{
+            animationDelay: "0.3s",
+            transformOrigin: "5px 13px",
+          }}
+        />
+        <path
+          d="M7.2 2.2 8 5.1"
+          className="transition-all duration-500 group-hover:animate-ping"
+          style={{
+            animationDelay: "0.4s",
+            transformOrigin: "7.6px 3.6px",
+          }}
+        />
+      </g>
+
+      {/* 鼠标指针 - 带点击缩放效果 */}
+      <path
+        d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z"
+        className="transition-transform duration-200 group-hover:scale-90 group-hover:animate-pulse"
+        style={{
+          transformOrigin: "15px 15px",
+        }}
+      />
+    </svg>
+  ),
   listChecks: ListChecks,
   github: ({ ...props }: LucideProps) => (
     <svg
@@ -182,7 +257,6 @@ export const Icons = {
   heading1: Heading1,
   qrcode: QrCode,
   laptop: Laptop,
-  // lineChart: LineChart,
   logo: LogoIcon,
   media: Image,
   messages: MessagesSquare,
@@ -194,6 +268,7 @@ export const Icons = {
   refreshCw: RefreshCw,
   search: Search,
   settings: Settings,
+  userSettings: UserCog,
   spinner: Loader2,
   sun: SunMedium,
   trash: Trash2,
@@ -219,16 +294,7 @@ export const Icons = {
   users: Users,
   warning: AlertTriangle,
   globeLock: GlobeLock,
-  globe: Globe,
-  link: Link,
-  mail: Mail,
-  mailPlus: MailPlus,
-  mailOpen: MailOpen,
-  bug: Bug,
-  CirclePlay: CirclePlay,
-  unplug: Unplug,
-  send: Send,
-  lineChart: ({ ...props }: LucideProps) => (
+  globe: ({ className, ...props }: LucideProps) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="24"
@@ -239,10 +305,66 @@ export const Icons = {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      className={cn(
+        "group inline-block cursor-pointer transition-transform duration-200 group-hover:scale-110",
+        className,
+      )}
+      style={{ animationDuration: "2s" }}
+      {...props}
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path
+        className="group-hover:hidden"
+        d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"
+      />
+      <path
+        d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"
+        className="transition-all duration-300 ease-in-out [stroke-dasharray:60] [stroke-dashoffset:-60] group-hover:[stroke-dashoffset:0]"
+      />
+      <path className="group-hover:hidden" d="M2 12h20" />
+      <path
+        d="M2 12h20"
+        className="duration-800 transition-all ease-in-out [stroke-dasharray:20] [stroke-dashoffset:-20] group-hover:[stroke-dashoffset:0]"
+        style={{ transitionDelay: "0.2s" }}
+      />
+    </svg>
+  ),
+  link: Link,
+  mail: Mail,
+  mailPlus: MailPlus,
+  mailOpen: MailOpen,
+  bug: Bug,
+  CirclePlay: CirclePlay,
+  unplug: Unplug,
+  send: Send,
+  lineChart: ({ className, ...props }: LucideProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={cn(
+        "group inline-block cursor-pointer transition-transform duration-75 group-hover:scale-110",
+        className,
+      )}
       {...props}
     >
       <path d="M3 3v16a2 2 0 0 0 2 2h16" />
-      <path d="m19 9-5 5-4-4-3 3" stroke="#0065ea" />
+      <path
+        className="group-hover:hidden"
+        d="m19 9-5 5-4-4-3 3"
+        stroke="#0065ea"
+      />
+      <path
+        d="m19 9-5 5-4-4-3 3"
+        stroke="#0065ea"
+        className="transition-all duration-1000 ease-in-out [stroke-dasharray:20] [stroke-dashoffset:-20] group-hover:[stroke-dashoffset:0]"
+      />
     </svg>
   ),
   outLink: ({ ...props }: LucideProps) => (
@@ -299,6 +421,150 @@ export const Icons = {
           </g>
         </g>
       </g>
+    </svg>
+  ),
+  cloudflare: ({ ...props }: LucideProps) => (
+    <svg
+      width="800px"
+      height="800px"
+      viewBox="0 -70 256 256"
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlnsXlink="http://www.w3.org/1999/xlink"
+      preserveAspectRatio="xMidYMid"
+      {...props}
+    >
+      <g>
+        <g transform="translate(0.000000, -1.000000)">
+          <path
+            d="M202.3569,50.394 L197.0459,48.27 C172.0849,104.434 72.7859,70.289 66.8109,86.997 C65.8149,98.283 121.0379,89.143 160.5169,91.056 C172.5559,91.639 178.5929,100.727 173.4809,115.54 L183.5499,115.571 C195.1649,79.362 232.2329,97.841 233.7819,85.891 C231.2369,78.034 191.1809,85.891 202.3569,50.394 Z"
+            fill="#FFFFFF"
+          ></path>
+          <path
+            d="M176.332,109.3483 C177.925,104.0373 177.394,98.7263 174.739,95.5393 C172.083,92.3523 168.365,90.2283 163.585,89.6973 L71.17,88.6343 C70.639,88.6343 70.108,88.1033 69.577,88.1033 C69.046,87.5723 69.046,87.0413 69.577,86.5103 C70.108,85.4483 70.639,84.9163 71.701,84.9163 L164.647,83.8543 C175.801,83.3233 187.486,74.2943 191.734,63.6723 L197.046,49.8633 C197.046,49.3313 197.577,48.8003 197.046,48.2693 C191.203,21.1823 166.772,0.9993 138.091,0.9993 C111.535,0.9993 88.697,17.9953 80.73,41.8963 C75.419,38.1783 69.046,36.0533 61.61,36.5853 C48.863,37.6473 38.772,48.2693 37.178,61.0163 C36.647,64.2033 37.178,67.3903 37.71,70.5763 C16.996,71.1073 0,88.1033 0,109.3483 C0,111.4723 0,113.0663 0.531,115.1903 C0.531,116.2533 1.593,116.7843 2.125,116.7843 L172.614,116.7843 C173.676,116.7843 174.739,116.2533 174.739,115.1903 L176.332,109.3483 Z"
+            fill="#F4811F"
+          ></path>
+          <path
+            d="M205.5436,49.8628 L202.8876,49.8628 C202.3566,49.8628 201.8256,50.3938 201.2946,50.9248 L197.5766,63.6718 C195.9836,68.9828 196.5146,74.2948 199.1706,77.4808 C201.8256,80.6678 205.5436,82.7918 210.3236,83.3238 L229.9756,84.3858 C230.5066,84.3858 231.0376,84.9168 231.5686,84.9168 C232.0996,85.4478 232.0996,85.9788 231.5686,86.5098 C231.0376,87.5728 230.5066,88.1038 229.4436,88.1038 L209.2616,89.1658 C198.1076,89.6968 186.4236,98.7258 182.1746,109.3478 L181.1116,114.1288 C180.5806,114.6598 181.1116,115.7218 182.1746,115.7218 L252.2826,115.7218 C253.3446,115.7218 253.8756,115.1908 253.8756,114.1288 C254.9376,109.8798 255.9996,105.0998 255.9996,100.3188 C255.9996,72.7008 233.1616,49.8628 205.5436,49.8628"
+            fill="#FAAD3F"
+          ></path>
+        </g>
+      </g>
+    </svg>
+  ),
+  forwardArrow: ({ ...props }: LucideProps) => (
+    <svg
+      viewBox="0 0 18 18"
+      xmlns="http://www.w3.org/2000/svg"
+      // className="h-4 w-4 shrink-0 text-gray-400"
+      {...props}
+    >
+      <g fill="currentColor">
+        <path
+          d="M15.25,9.75H4.75c-1.105,0-2-.895-2-2V3.75"
+          fill="none"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+        ></path>
+        <polyline
+          fill="none"
+          points="11 5.5 15.25 9.75 11 14"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+        ></polyline>
+      </g>
+    </svg>
+  ),
+  resend: ({ ...props }: LucideProps) => (
+    <svg
+      fill="none"
+      viewBox="0 0 78 78"
+      width="80"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M3 28.6C3 19.6392 3 15.1587 4.7439 11.7362C6.27787 8.72556 8.72556 6.27787 11.7362 4.7439C15.1587 3 19.6392 3 28.6 3H49.4C58.3608 3 62.8413 3 66.2638 4.7439C69.2744 6.27787 71.7221 8.72556 73.2561 11.7362C75 15.1587 75 19.6392 75 28.6V49.4C75 58.3608 75 62.8413 73.2561 66.2638C71.7221 69.2744 69.2744 71.7221 66.2638 73.2561C62.8413 75 58.3608 75 49.4 75H28.6C19.6392 75 15.1587 75 11.7362 73.2561C8.72556 71.7221 6.27787 69.2744 4.7439 66.2638C3 62.8413 3 58.3608 3 49.4V28.6Z"
+        fill="url(#paint0_linear_1_13)"
+      ></path>
+      <path
+        clipRule="evenodd"
+        d="M49.4 6H28.6C24.0701 6 20.8531 6.00233 18.3355 6.20802C15.853 6.41085 14.316 6.79637 13.0981 7.41692C10.652 8.66327 8.66327 10.652 7.41692 13.0981C6.79637 14.316 6.41085 15.853 6.20802 18.3355C6.00233 20.8531 6 24.0701 6 28.6V49.4C6 53.9299 6.00233 57.1469 6.20802 59.6645C6.41085 62.147 6.79637 63.684 7.41692 64.9019C8.66327 67.348 10.652 69.3367 13.0981 70.5831C14.316 71.2036 15.853 71.5891 18.3355 71.792C20.8531 71.9977 24.0701 72 28.6 72H49.4C53.9299 72 57.1469 71.9977 59.6645 71.792C62.147 71.5891 63.684 71.2036 64.9019 70.5831C67.348 69.3367 69.3367 67.348 70.5831 64.9019C71.2036 63.684 71.5891 62.147 71.792 59.6645C71.9977 57.1469 72 53.9299 72 49.4V28.6C72 24.0701 71.9977 20.8531 71.792 18.3355C71.5891 15.853 71.2036 14.316 70.5831 13.0981C69.3367 10.652 67.348 8.66327 64.9019 7.41692C63.684 6.79637 62.147 6.41085 59.6645 6.20802C57.1469 6.00233 53.9299 6 49.4 6ZM4.7439 11.7362C3 15.1587 3 19.6392 3 28.6V49.4C3 58.3608 3 62.8413 4.7439 66.2638C6.27787 69.2744 8.72556 71.7221 11.7362 73.2561C15.1587 75 19.6392 75 28.6 75H49.4C58.3608 75 62.8413 75 66.2638 73.2561C69.2744 71.7221 71.7221 69.2744 73.2561 66.2638C75 62.8413 75 58.3608 75 49.4V28.6C75 19.6392 75 15.1587 73.2561 11.7362C71.7221 8.72556 69.2744 6.27787 66.2638 4.7439C62.8413 3 58.3608 3 49.4 3H28.6C19.6392 3 15.1587 3 11.7362 4.7439C8.72556 6.27787 6.27787 8.72556 4.7439 11.7362Z"
+        fill="black"
+        fillRule="evenodd"
+      ></path>
+      <path
+        d="M3 28.6C3 19.6392 3 15.1587 4.7439 11.7362C6.27787 8.72556 8.72556 6.27787 11.7362 4.7439C15.1587 3 19.6392 3 28.6 3H49.4C58.3608 3 62.8413 3 66.2638 4.7439C69.2744 6.27787 71.7221 8.72556 73.2561 11.7362C75 15.1587 75 19.6392 75 28.6V49.4C75 58.3608 75 62.8413 73.2561 66.2638C71.7221 69.2744 69.2744 71.7221 66.2638 73.2561C62.8413 75 58.3608 75 49.4 75H28.6C19.6392 75 15.1587 75 11.7362 73.2561C8.72556 71.7221 6.27787 69.2744 4.7439 66.2638C3 62.8413 3 58.3608 3 49.4V28.6Z"
+        fill="url(#paint1_linear_1_13)"
+      ></path>
+      <path
+        clipRule="evenodd"
+        d="M49.532 -4.96464e-07C53.9006 -2.33846e-05 57.3626 -4.14997e-05 60.1531 0.22795C63.0066 0.461095 65.4211 0.947527 67.6258 2.07088C71.2009 3.89247 74.1075 6.7991 75.9291 10.3742C77.0525 12.5789 77.5389 14.9934 77.772 17.8469C78 20.6374 78 24.0994 78 28.4679V49.5321C78 53.9006 78 57.3626 77.772 60.1531C77.5389 63.0066 77.0525 65.4211 75.9291 67.6258C74.1075 71.2009 71.2009 74.1075 67.6258 75.9291C65.4211 77.0525 63.0066 77.5389 60.1531 77.772C57.3626 78 53.9006 78 49.5321 78H28.4679C24.0994 78 20.6374 78 17.8469 77.772C14.9934 77.5389 12.5789 77.0525 10.3742 75.9291C6.7991 74.1075 3.89247 71.2009 2.07088 67.6258C0.947527 65.4211 0.461096 63.0066 0.227951 60.1531C-4.05461e-05 57.3626 -2.2431e-05 53.9006 4.5721e-07 49.532V28.468C-2.2431e-05 24.0994 -4.05461e-05 20.6374 0.227951 17.8469C0.461096 14.9934 0.947528 12.5789 2.07088 10.3742C3.89247 6.7991 6.7991 3.89247 10.3742 2.07088C12.5789 0.947526 14.9934 0.461095 17.8469 0.22795C20.6374 -4.14997e-05 24.0994 -2.33846e-05 28.468 -4.96464e-07H49.532ZM4.7439 11.7362C3 15.1587 3 19.6392 3 28.6V49.4C3 58.3608 3 62.8413 4.7439 66.2638C6.27787 69.2744 8.72556 71.7221 11.7362 73.2561C15.1587 75 19.6392 75 28.6 75H49.4C58.3608 75 62.8413 75 66.2638 73.2561C69.2744 71.7221 71.7221 69.2744 73.2561 66.2638C75 62.8413 75 58.3608 75 49.4V28.6C75 19.6392 75 15.1587 73.2561 11.7362C71.7221 8.72556 69.2744 6.27787 66.2638 4.7439C62.8413 3 58.3608 3 49.4 3H28.6C19.6392 3 15.1587 3 11.7362 4.7439C8.72556 6.27787 6.27787 8.72556 4.7439 11.7362Z"
+        fill="black"
+        fillRule="evenodd"
+      ></path>
+      <path
+        clipRule="evenodd"
+        d="M49.532 -4.96464e-07C53.9006 -2.33846e-05 57.3626 -4.14997e-05 60.1531 0.22795C63.0066 0.461095 65.4211 0.947527 67.6258 2.07088C71.2009 3.89247 74.1075 6.7991 75.9291 10.3742C77.0525 12.5789 77.5389 14.9934 77.772 17.8469C78 20.6374 78 24.0994 78 28.4679V49.5321C78 53.9006 78 57.3626 77.772 60.1531C77.5389 63.0066 77.0525 65.4211 75.9291 67.6258C74.1075 71.2009 71.2009 74.1075 67.6258 75.9291C65.4211 77.0525 63.0066 77.5389 60.1531 77.772C57.3626 78 53.9006 78 49.5321 78H28.4679C24.0994 78 20.6374 78 17.8469 77.772C14.9934 77.5389 12.5789 77.0525 10.3742 75.9291C6.7991 74.1075 3.89247 71.2009 2.07088 67.6258C0.947527 65.4211 0.461096 63.0066 0.227951 60.1531C-4.05461e-05 57.3626 -2.2431e-05 53.9006 4.5721e-07 49.532V28.468C-2.2431e-05 24.0994 -4.05461e-05 20.6374 0.227951 17.8469C0.461096 14.9934 0.947528 12.5789 2.07088 10.3742C3.89247 6.7991 6.7991 3.89247 10.3742 2.07088C12.5789 0.947526 14.9934 0.461095 17.8469 0.22795C20.6374 -4.14997e-05 24.0994 -2.33846e-05 28.468 -4.96464e-07H49.532ZM4.7439 11.7362C3 15.1587 3 19.6392 3 28.6V49.4C3 58.3608 3 62.8413 4.7439 66.2638C6.27787 69.2744 8.72556 71.7221 11.7362 73.2561C15.1587 75 19.6392 75 28.6 75H49.4C58.3608 75 62.8413 75 66.2638 73.2561C69.2744 71.7221 71.7221 69.2744 73.2561 66.2638C75 62.8413 75 58.3608 75 49.4V28.6C75 19.6392 75 15.1587 73.2561 11.7362C71.7221 8.72556 69.2744 6.27787 66.2638 4.7439C62.8413 3 58.3608 3 49.4 3H28.6C19.6392 3 15.1587 3 11.7362 4.7439C8.72556 6.27787 6.27787 8.72556 4.7439 11.7362Z"
+        fill="url(#paint2_linear_1_13)"
+        fillRule="evenodd"
+      ></path>
+      <path
+        d="M28.3999 54.1V23.1H40.1775C42.5903 23.1 44.6146 23.5137 46.2504 24.3412C47.8964 25.1687 49.1386 26.3292 49.9769 27.8227C50.8255 29.3061 51.2497 31.0367 51.2497 33.0146C51.2497 35.0025 50.8203 36.7281 49.9616 38.1913C49.113 39.6444 47.8606 40.7696 46.2044 41.5668C44.5481 42.3539 42.5136 42.7475 40.1009 42.7475H31.7124V38.0854H39.3341C40.7449 38.0854 41.9002 37.8936 42.7999 37.5102C43.6996 37.1166 44.3641 36.5465 44.7935 35.7997C45.2331 35.0429 45.4529 34.1145 45.4529 33.0146C45.4529 31.9146 45.2331 30.9761 44.7935 30.1991C44.3539 29.412 43.6842 28.8166 42.7846 28.413C41.8849 27.9993 40.7245 27.7924 39.3034 27.7924H34.0894V54.1H28.3999ZM44.6248 40.0531L52.3999 54.1H46.051L38.414 40.0531H44.6248Z"
+        fill="url(#paint3_linear_1_13)"
+      ></path>
+      <defs>
+        <linearGradient
+          gradientUnits="userSpaceOnUse"
+          id="paint0_linear_1_13"
+          x1="39"
+          x2="39"
+          y1="-20"
+          y2="75"
+        >
+          <stop stopColor="#4C4C57"></stop>
+          <stop offset="0.444444" stopColor="#05050A"></stop>
+          <stop offset="1"></stop>
+        </linearGradient>
+        <linearGradient
+          gradientUnits="userSpaceOnUse"
+          id="paint1_linear_1_13"
+          x1="39"
+          x2="39"
+          y1="-20"
+          y2="75"
+        >
+          <stop stopColor="#4C4C57"></stop>
+          <stop offset="0.444444" stopColor="#05050A"></stop>
+          <stop offset="1"></stop>
+        </linearGradient>
+        <linearGradient
+          gradientUnits="userSpaceOnUse"
+          id="paint2_linear_1_13"
+          x1="39"
+          x2="39"
+          y1="3"
+          y2="75"
+        >
+          <stop stopColor="white" stopOpacity="0.6"></stop>
+          <stop offset="1" stopColor="white" stopOpacity="0.2"></stop>
+        </linearGradient>
+        <linearGradient
+          gradientUnits="userSpaceOnUse"
+          id="paint3_linear_1_13"
+          x1="29.4492"
+          x2="86.4298"
+          y1="25.6833"
+          y2="72.588"
+        >
+          <stop stopColor="white"></stop>
+          <stop offset="1" stopColor="white" stopOpacity="0"></stop>
+        </linearGradient>
+      </defs>
     </svg>
   ),
 };

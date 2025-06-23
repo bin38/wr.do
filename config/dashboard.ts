@@ -11,12 +11,12 @@ export const sidebarLinks: SidebarNavItem[] = [
       { href: "/dashboard", icon: "dashboard", title: "Dashboard" },
       { href: "/dashboard/urls", icon: "link", title: "Short Urls" },
       { href: "/emails", icon: "mail", title: "Emails" },
-      { href: "/dashboard/records", icon: "globeLock", title: "DNS Records" },
+      { href: "/dashboard/records", icon: "globe", title: "DNS Records" },
       { href: "/chat", icon: "messages", title: "WRoom" },
     ],
   },
   {
-    title: "SCRAPE",
+    title: "OPEN API",
     items: [
       {
         href: "/dashboard/scrape",
@@ -72,20 +72,21 @@ export const sidebarLinks: SidebarNavItem[] = [
         title: "Records",
         authorizeOnly: UserRole.ADMIN,
       },
+      {
+        href: "/admin/system",
+        icon: "settings",
+        title: "System Settings",
+        authorizeOnly: UserRole.ADMIN,
+      },
     ],
   },
   {
     title: "OPTIONS",
     items: [
-      { href: "/dashboard/settings", icon: "settings", title: "Settings" },
+      { href: "/dashboard/settings", icon: "userSettings", title: "Settings" },
       { href: "/docs", icon: "bookOpen", title: "Documentation" },
       {
-        href: siteConfig.links.oichat,
-        icon: "botMessageSquare",
-        title: "OiChat",
-      },
-      {
-        href: siteConfig.links.feedback,
+        href: "/feedback",
         icon: "messageQuoted",
         title: "Feedback",
       },

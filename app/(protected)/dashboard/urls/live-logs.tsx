@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { RefreshCwIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import useSWR, { useSWRConfig } from "swr";
 
@@ -24,7 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -47,13 +47,15 @@ export interface LogEntry {
   isNew?: boolean; // New property to track newly added logs
 }
 
-export default function LiveLog({ admin }: { admin: boolean }) {
+export default function LiveLog({ admin = false }: { admin?: boolean }) {
   const { theme } = useTheme();
   const { mutate } = useSWRConfig();
   const [isLive, setIsLive] = useState(false);
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [limitDiplay, setLimitDisplay] = useState(100);
   const newLogsRef = useRef<Set<string>>(new Set()); // Track new log keys
+
+  const t = useTranslations("Components");
 
   const {
     data: newLogs,
@@ -152,10 +154,10 @@ export default function LiveLog({ admin }: { admin: boolean }) {
         <div className="flex items-center justify-between gap-2">
           <div>
             <CardTitle className="text-base text-gray-800 dark:text-gray-100">
-              Live Log
+              {t("Live Logs")}
             </CardTitle>
             <CardDescription>
-              Real-time logs of short link visits.
+              {t("Real-time logs of short link visits")}.
             </CardDescription>
           </div>
 
@@ -163,11 +165,12 @@ export default function LiveLog({ admin }: { admin: boolean }) {
             onClick={toggleLive}
             variant={"outline"}
             size="sm"
-            className={`ml-auto gap-2 bg-primary-foreground transition-colors hover:border-blue-600 hover:text-blue-600 ${
+            className={`ml-auto gap-2 text-nowrap bg-primary-foreground transition-colors hover:border-blue-600 hover:text-blue-600 ${
               isLive ? "border-dashed border-blue-600 text-blue-500" : ""
             }`}
           >
-            <Icons.CirclePlay className="h-4 w-4" /> {isLive ? "Stop" : "Live"}
+            <Icons.CirclePlay className="h-4 w-4" />{" "}
+            {isLive ? t("Stop") : t("Live")}
           </Button>
           <Button
             className="bg-primary-foreground"
@@ -201,19 +204,30 @@ export default function LiveLog({ admin }: { admin: boolean }) {
         {error ? (
           <div className="text-center text-red-500">{error.message}</div>
         ) : logs.length === 0 && !newLogs ? (
-          // <Skeleton className="h-8 w-full" />
           <></>
         ) : (
           <div className="scrollbar-hidden h-96 overflow-y-auto bg-primary-foreground">
             <Table>
               <TableHeader>
-                <TableRow className="bg-gray-100/50 text-sm dark:bg-primary-foreground">
-                  <TableHead className="h-8 w-1/6 px-1">Time</TableHead>
-                  <TableHead className="h-8 w-1/12 px-1">Slug</TableHead>
-                  <TableHead className="h-8 px-1">Target</TableHead>
-                  <TableHead className="h-8 w-1/12 px-1">IP</TableHead>
-                  <TableHead className="h-8 w-1/6 px-1">Location</TableHead>
-                  <TableHead className="h-8 w-1/12 px-1">Clicks</TableHead>
+                <TableRow className="grid grid-cols-5 bg-gray-100/50 text-sm dark:bg-primary-foreground sm:grid-cols-9">
+                  <TableHead className="col-span-2 flex h-8 items-center">
+                    {t("Time")}
+                  </TableHead>
+                  <TableHead className="col-span-1 flex h-8 items-center">
+                    {t("Slug")}
+                  </TableHead>
+                  <TableHead className="col-span-3 hidden h-8 items-center sm:flex">
+                    {t("Target")}
+                  </TableHead>
+                  <TableHead className="col-span-1 hidden h-8 items-center sm:flex">
+                    IP
+                  </TableHead>
+                  <TableHead className="col-span-1 flex h-8 items-center">
+                    {t("Location")}
+                  </TableHead>
+                  <TableHead className="col-span-1 flex h-8 items-center">
+                    {t("Clicks")}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -235,23 +249,24 @@ export default function LiveLog({ admin }: { admin: boolean }) {
                           ease: "linear",
                         },
                       }}
-                      className="font-mono text-xs hover:bg-gray-200 dark:border-gray-800"
+                      className="grid grid-cols-5 font-mono text-xs hover:bg-gray-200 dark:border-gray-800 sm:grid-cols-9"
                     >
-                      <TableCell className="whitespace-nowrap px-1 py-1.5">
+                      <TableCell className="col-span-2 truncate py-1.5">
                         {new Date(log.updatedAt).toLocaleString()}
                       </TableCell>
-                      <TableCell className="font-midium px-1 py-1.5 text-green-700">
+                      <TableCell className="font-midium col-span-1 truncate py-1.5 text-green-700">
                         {log.slug}
                       </TableCell>
-                      <TableCell className="max-w-10 truncate px-1 py-1.5 hover:underline">
+                      <TableCell className="col-span-3 hidden max-w-full truncate py-1.5 hover:underline sm:flex">
                         <a href={log.target} target="_blank" title={log.target}>
                           {log.target}
                         </a>
                       </TableCell>
-
-                      <TableCell className="px-1 py-1.5">{log.ip}</TableCell>
+                      <TableCell className="col-span-1 hidden truncate py-1.5 sm:flex">
+                        {log.ip}
+                      </TableCell>
                       <TableCell
-                        className="max-w-6 truncate px-1 py-1.5"
+                        className="col-span-1 truncate py-1.5"
                         title={getCountryName(log.country || "")}
                       >
                         {decodeURIComponent(
@@ -260,7 +275,7 @@ export default function LiveLog({ admin }: { admin: boolean }) {
                             : "-",
                         )}
                       </TableCell>
-                      <TableCell className="px-1 py-1.5 text-green-700">
+                      <TableCell className="col-span-1 py-1.5 text-green-700">
                         {log.click}
                       </TableCell>
                     </motion.tr>
@@ -272,7 +287,7 @@ export default function LiveLog({ admin }: { admin: boolean }) {
         )}
         {isLive && (
           <div className="flex w-full items-center justify-end gap-2 border-t border-dashed pt-4 text-sm text-gray-500">
-            <p>{logs.length}</p> of
+            <p>{logs.length}</p> {t("of")}
             <Select
               onValueChange={(value: string) => {
                 setLimitDisplay(Number(value));
@@ -291,7 +306,7 @@ export default function LiveLog({ admin }: { admin: boolean }) {
                 ))}
               </SelectContent>
             </Select>
-            <p>total logs</p>
+            <p>{t("total logs")}</p>
           </div>
         )}
       </CardContent>

@@ -2,6 +2,7 @@ export const CLOUDFLARE_API_URL = "https://api.cloudflare.com/client/v4";
 
 export interface CreateDNSRecord {
   id: string;
+  zone_name: string;
   type: string;
   name: string;
   content: string;
@@ -76,9 +77,11 @@ export const createDNSRecord = async (
       body: JSON.stringify(record),
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error status: ${response.status}`);
-    }
+    // console.log("response.status", await response.json());
+
+    // if (!response.ok) {
+    //   throw new Error(`HTTP error status: ${response.status}`);
+    // }
 
     const data = await response.json();
     return data;
@@ -108,10 +111,6 @@ export const deleteDNSRecord = async (
       method: "DELETE",
       headers,
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error status: ${response.status}`);
-    }
 
     const data = await response.json();
     return data;
@@ -218,6 +217,32 @@ export const getDNSRecordDetail = async (
 
     const data = await response.json();
     return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getZoneDetail = async (
+  zoneId: string,
+  apiKey: string,
+  email: string,
+) => {
+  try {
+    const url = `${CLOUDFLARE_API_URL}/zones/${zoneId}`;
+
+    const headers = {
+      "X-Auth-Email": email,
+      "X-Auth-Key": apiKey,
+    };
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers,
+    });
+
+    console.log(response.status);
+
+    return response.status;
   } catch (error) {
     throw error;
   }

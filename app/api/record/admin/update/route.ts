@@ -1,6 +1,6 @@
-import { env } from "@/env.mjs";
 import { updateDNSRecord } from "@/lib/cloudflare";
 import { updateUserRecord } from "@/lib/dto/cloudflare-dns-record";
+import { getDomainsByFeature } from "@/lib/dto/domains";
 import { checkUserStatus } from "@/lib/dto/user";
 import { getCurrentUser } from "@/lib/session";
 
@@ -11,70 +11,99 @@ export async function POST(req: Request) {
     if (user.role !== "ADMIN") {
       return Response.json("Unauthorized", {
         status: 401,
+        statusText: "Admin access required",
       });
     }
 
-    const {
-      CLOUDFLARE_ZONE_ID,
-      CLOUDFLARE_ZONE_NAME,
-      CLOUDFLARE_API_KEY,
-      CLOUDFLARE_EMAIL,
-    } = env;
-    if (
-      !CLOUDFLARE_ZONE_ID ||
-      !CLOUDFLARE_ZONE_NAME ||
-      !CLOUDFLARE_API_KEY ||
-      !CLOUDFLARE_EMAIL
-    ) {
-      return Response.json("API key、zone iD and email are required", {
-        status: 400,
-      });
+    const zones = await getDomainsByFeature("enable_dns", true);
+    if (!zones.length) {
+      return Response.json(
+        "API key, zone configuration, and email are required",
+        { status: 401, statusText: "Missing required configuration" },
+      );
     }
 
     const { record, recordId, userId } = await req.json();
-    if (!recordId || !userId) {
-      return Response.json("RecordId and userId are required", {
+    if (!record || !recordId || !userId) {
+      return Response.json("record, recordId, and userId are required", {
         status: 400,
+        statusText: "Invalid request body",
       });
     }
 
-    const data = await updateDNSRecord(
-      CLOUDFLARE_ZONE_ID,
-      CLOUDFLARE_API_KEY,
-      CLOUDFLARE_EMAIL,
-      recordId,
-      record,
-    );
-    if (!data.success || !data.result?.id) {
-      return Response.json(data.errors, {
-        status: 501,
-      });
-    } else {
-      const res = await updateUserRecord(userId, {
-        record_id: data.result.id,
-        zone_id: CLOUDFLARE_ZONE_ID,
-        zone_name: CLOUDFLARE_ZONE_NAME,
-        name: data.result.name,
-        type: data.result.type,
-        content: data.result.content,
-        proxied: data.result.proxied,
-        proxiable: data.result.proxiable,
-        ttl: data.result.ttl,
-        comment: data.result.comment ?? "",
-        tags: data.result.tags?.join("") ?? "",
-        modified_on: data.result.modified_on,
-        active: 1,
-      });
-      if (res.status !== "success") {
-        return Response.json(res.status, {
-          status: 502,
-        });
+    let record_name = ["A", "CNAME", "AAAA"].includes(record.type)
+      ? record.name
+      : `${record.name}.${record.zone_name}`;
+
+    let matchedZone;
+
+    for (const zone of zones) {
+      if (record.zone_name === zone.domain_name) {
+        matchedZone = zone;
+        break;
       }
-      return Response.json(res.data);
     }
+
+    if (!matchedZone) {
+      return Response.json(
+        `No matching zone found for domain: ${record_name}`,
+        {
+          status: 400,
+          statusText: "Invalid domain",
+        },
+      );
+    }
+
+    const data = await updateDNSRecord(
+      matchedZone.cf_zone_id,
+      matchedZone.cf_api_key,
+      matchedZone.cf_email,
+      recordId,
+      { ...record, name: record_name },
+    );
+
+    if (!data.success || !data.result?.id) {
+      return Response.json(
+        data.errors?.[0]?.message || "Failed to update DNS record",
+        {
+          status: 501,
+          statusText: "Cloudflare API error",
+        },
+      );
+    }
+
+    const res = await updateUserRecord(userId, {
+      record_id: data.result.id,
+      zone_id: matchedZone.cf_zone_id,
+      zone_name: matchedZone.domain_name,
+      name: data.result.name,
+      type: data.result.type,
+      content: data.result.content,
+      proxied: data.result.proxied,
+      proxiable: data.result.proxiable,
+      ttl: data.result.ttl,
+      comment: data.result.comment ?? "",
+      tags: data.result.tags?.join("") ?? "",
+      modified_on: data.result.modified_on,
+      active: 1,
+    });
+
+    if (res.status !== "success") {
+      return Response.json(res.status, {
+        status: 502,
+        statusText: "Failed to update user record",
+      });
+    }
+
+    return Response.json(res.data, {
+      status: 200,
+      statusText: "success",
+    });
   } catch (error) {
-    return Response.json(error?.statusText || error, {
+    console.error("[Error]", error);
+    return Response.json(error.message || "Server error", {
       status: error?.status || 500,
+      statusText: error?.statusText || "Server error",
     });
   }
 }

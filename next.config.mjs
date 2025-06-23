@@ -1,4 +1,8 @@
-const { withContentlayer } = require("next-contentlayer2");
+import { withContentlayer } from "next-contentlayer2";
+import createNextIntlPlugin from "next-intl/plugin";
+import nextPWA from "next-pwa";
+
+const withNextIntl = createNextIntlPlugin();
 
 import("./env.mjs");
 
@@ -6,8 +10,17 @@ import("./env.mjs");
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  output: "standalone",
   images: {
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "unavatar.io",
+      },
       {
         protocol: "https",
         hostname: "avatars.githubusercontent.com",
@@ -36,6 +49,9 @@ const nextConfig = {
   },
   experimental: {
     serverComponentsExternalPackages: ["@prisma/client"],
+    // serverActions: {
+    //   allowedOrigins: ["localhost:3000", process.env.NEXT_PUBLIC_APP_URL],
+    // },
   },
   rewrites() {
     return [
@@ -101,9 +117,10 @@ const nextConfig = {
   },
 };
 
-const withPWA = require("next-pwa")({
+const withPWA = nextPWA({
   dest: "public",
   disable: false,
 });
 
-module.exports = withContentlayer(withPWA(nextConfig));
+// module.exports = withContentlayer(withPWA(withNextIntl(nextConfig)));
+export default withContentlayer(withPWA(withNextIntl(nextConfig)));
