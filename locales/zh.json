@@ -100,7 +100,7 @@
     "The administrator has enabled application mode": "管理员已启用 [用户申请 - 管理员审核] 模式",
     "After submission, you need to wait for administrator approval before the record takes effect": "提交后, 您需要等待管理员审核才能生效",
     "What are you planning to use the subdomain for?": "您计划使用此域名做什么？",
-    "At least 20 characters": "至少 20 个字符",
+    "At least 20 characters, Max 100 characters": "至少 20 个字符，最多 100 个字符",
     "User email": "用户邮箱",
     "Domain": "根域名",
     "No domains configured": "未配置域名",
@@ -184,7 +184,8 @@
     "Login Password": "用户密码",
     "Duplicate": "复制",
     "Confirm duplicate domain": "确认复制域名",
-    "This will duplicate all configuration information for the {domain} domain, and create a new domain": "这将复制 {domain} 域名的所有配置信息，并创建一个新域名"
+    "This will duplicate all configuration information for the {domain} domain, and create a new domain": "这将复制 {domain} 域名的所有配置信息，并创建一个新域名",
+    "Add User": "添加用户"
   },
   "Components": {
     "Dashboard": "用户面板",
@@ -304,7 +305,26 @@
     "Active": "有效解析",
     "Inactive": "无效解析",
     "Pending": "审核中",
-    "Rejected": "已拒绝"
+    "Rejected": "已拒绝",
+    "linkNotExist": "链接不存在",
+    "linkNotExistDescription": "很抱歉，您访问的短链接不存在。可能已被删除或从未创建过。",
+    "linkExpired": "链接已过期",
+    "linkExpiredDescription": "这个短链接已经过期，无法继续使用。",
+    "linkDisabled": "链接已禁用",
+    "linkDisabledDescription": "这个短链接已被创建者禁用。",
+    "systemError": "系统错误",
+    "systemErrorDescription": "处理您的请求时发生了错误，请稍后重试。",
+    "contactCreatorReactivate": "请联系短链接创建者重新激活或创建新的短链接。",
+    "contactCreatorOrAdmin": "请联系短链接创建者或系统管理员。",
+    "shortLink": "短链接",
+    "retry": "重试",
+    "backToHome": "返回首页",
+    "goBack": "返回上页",
+    "contactSupportIfError": "如果您认为这是一个错误，请联系技术支持",
+    "Actived": "有效",
+    "Disabled": "已禁用",
+    "Expired": "已过期",
+    "PasswordProtected": "密码保护"
   },
   "Landing": {
     "settings": "设置",
@@ -360,14 +380,17 @@
     "Email Code": "邮箱验证",
     "Password": "账号密码",
     "Sign In / Sign Up": "点击登录/注册",
-    "Incorrect email or password": "邮箱或密码错误",
+    "Incorrect email or password": "邮箱或密码错误，或管理员关闭了新用户注册",
     "Something went wrong": "出错了",
     "Check your email": "检查您的邮箱",
     "We sent you a login link": "我们已向您发送登录链接",
     "Be sure to check your spam too": "请确保检查您的垃圾邮件",
     "Welcome back!": "欢迎回来!",
     "Unregistered users will automatically create an account": "未注册用户将自动创建账户",
-    "Administrator has disabled new user registration": "管理员已关闭新用户注册"
+    "Administrator has disabled new user registration": "管理员已关闭新用户注册",
+    "Email domain not supported, Please use one of the following:": "暂不支持此邮箱后缀，请使用以下邮箱:",
+    "Auth configuration error": "权限校验配置错误",
+    "Unknown error": "未知错误"
   },
   "System": {
     "MENU": "菜单",
@@ -494,7 +517,7 @@
     "User Registration": "用户注册",
     "Allow users to sign up": "是否允许用户注册",
     "Subdomain Apply Mode": "子域名申请模式",
-    "Enable subdomain apply mode, each submission requires administrator review": "启用子域名申请模式，用户每次提交新子域名需要管理员审核（邮件通知管理员审核，审核通过后邮件通知用户）",
+    "Enable subdomain apply mode, each submission requires administrator review": "启用子域名申请模式，用户每次提交新子域名需要管理员审核",
     "Notification": "系统通知",
     "Set system notification, this will be displayed in the header": "设置系统通知，将在网页顶部显示",
     "Login Methods": "登录方式",
@@ -524,6 +547,13 @@
     "Set Telegram group ID, split by comma if more than one, such as: -10054275724,-10045343642": "设置 Telegram 群组/频道 ID，多个群组/频道 ID请用逗号分隔，例如：-10054275724,-10045343642",
     "Set Telegram email message template": "设置 Telegram 邮件消息模板",
     "Set Telegram push email white list, split by comma, if not set, will push all emails": "设置 Telegram 推送邮件白名单，多个邮箱地址请用逗号分隔，若不设置，将推送所有邮件",
-    "How to configure Telegram bot": "如何配置 Telegram Bot"
+    "How to configure Telegram bot": "如何配置 Telegram Bot",
+    "Email Suffix Limit": "注册邮箱后缀限制",
+    "Enable eamil suffix limit, only works for resend email login and email password login methods": "开启注册邮箱后缀限制，仅适用于 Resend 邮箱登录和账号密码登录方式",
+    "Need to configure": "需要配置",
+    "Email Suffix White List": "白名单",
+    "Set email suffix white list, split by comma, such as: gmail-com,yahoo-com,hotmail-com": "设置邮箱后缀白名单，多个后缀请用逗号分隔，例如：gmail.com,yahoo.com,hotmail.com",
+    "Application Status Email Notifications": "申请状态邮件通知",
+    "Send email notifications for subdomain application status updates; Notifies administrators when users submit applications and notifies users of approval results; Only available when subdomain application mode is enabled": "开启后，用户申请子域名时将邮件通知管理员审核，审核完成后邮件通知用户结果。此功能仅在子域申请模式开启时有效"
   }
 }

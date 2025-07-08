@@ -137,6 +137,10 @@ pnpm dev
 
 Follow https://localhost:3000/setup
 
+## Deploy with Edgeone
+
+[![使用 EdgeOne Pages 部署](https://cdnstatic.tencentcs.com/edgeone/pages/deploy.svg)](https://edgeone.ai/pages/new?repository-url=https%3A%2F%2Fgithub.com%2Foiov%2Fwr.do)
+
 ## Environment Variables
 
 Via [Installation For Developer](https://wr.do/docs/developer).
@@ -148,6 +152,18 @@ Via [Installation For Developer](https://wr.do/docs/developer).
 - Prisma ORM as the database toolkit
 - Cloudflare as the primary cloud infrastructure
 - Vercel as the recommended deployment platform
+- Resend as the primary email service
+
+## Fork Repository Sync
+
+This project is configured with a sync workflow for the upstream repository [oiov/wr.do](https://github.com/oiov/wr.do), featuring:
+
+- 🔄 **Manual Sync Trigger** - Auto-sync disabled by default, full control over sync timing
+- 💬 **Auto Comment After Sync** - Add detailed sync information to related commits
+- 🚨 **Smart Error Handling** - Auto-create detailed Issues when sync fails
+- 🧹 **Auto Cleanup Notifications** - Automatically close previous sync failure Issues
+
+See [How to Trigger Sync](https://wr.do/docs/developer/sync) for details.
 
 ## Community Group
 
@@ -170,4 +186,3 @@ Via [Installation For Developer](https://wr.do/docs/developer).
  </picture>
 </a>
 
-[![Powered by DartNode](https://dartnode.com/branding/DN-Open-Source-sm.png)](https://dartnode.com "Powered by DartNode - Free VPS for Open Source")

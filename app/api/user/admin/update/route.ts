@@ -13,7 +13,6 @@ export async function POST(req: Request) {
 
     const { id, data } = await req.json();
 
-    // TODO: update user pwd
     const res = await updateUser(id, {
       name: data.name,
       email: data.email,

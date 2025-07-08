@@ -31,6 +31,9 @@ export async function GET(req: NextRequest) {
       "tg_email_chat_id",
       "tg_email_template",
       "tg_email_target_white_list",
+      "enable_email_registration_suffix_limit",
+      "email_registration_suffix_limit_white_list",
+      "enable_subdomain_status_email_pusher",
     ]);
 
     return Response.json(configs, { status: 200 });

@@ -100,7 +100,7 @@
     "The administrator has enabled application mode": "The administrator has enabled application mode",
     "After submission, you need to wait for administrator approval before the record takes effect": "After submission, you need to wait for administrator approval before the record takes effect",
     "What are you planning to use the subdomain for?": "What are you planning to use the subdomain for?",
-    "At least 20 characters": "At least 20 characters",
+    "At least 20 characters, Max 100 characters": "At least 20 characters, Max 100 characters",
     "User email": "User email",
     "Domain": "Domain",
     "No domains configured": "No domains configured",
@@ -184,7 +184,8 @@
     "Login Password": "Password",
     "Duplicate": "Duplicate",
     "Confirm duplicate domain": "Confirm duplicate domain",
-    "This will duplicate all configuration information for the {domain} domain, and create a new domain": "This will duplicate all configuration information for the {domain} domain, and create a new domain"
+    "This will duplicate all configuration information for the {domain} domain, and create a new domain": "This will duplicate all configuration information for the {domain} domain, and create a new domain",
+    "Add User": "Add User"
   },
   "Components": {
     "Dashboard": "Dashboard",
@@ -304,7 +305,26 @@
     "Active": "Active",
     "Inactive": "Inactive",
     "Pending": "Pending",
-    "Rejected": "Rejected"
+    "Rejected": "Rejected",
+    "linkNotExist": "Link Not Found",
+    "linkNotExistDescription": "Sorry, the short link you are trying to access does not exist. It may have been deleted or never created.",
+    "linkExpired": "Link Expired",
+    "linkExpiredDescription": "This short link has expired and can no longer be used.",
+    "linkDisabled": "Link Disabled",
+    "linkDisabledDescription": "This short link has been disabled by its creator.",
+    "systemError": "System Error",
+    "systemErrorDescription": "An error occurred while processing your request. Please try again later.",
+    "contactCreatorReactivate": "Please contact the creator of this short link to reactivate or create a new short link",
+    "contactCreatorOrAdmin": "Please contact the creator of this short link or system administrator",
+    "shortLink": "Short Link",
+    "retry": "Retry",
+    "backToHome": "Back to Home",
+    "goBack": "Go Back",
+    "contactSupportIfError": "If you believe this is an error, please contact technical support",
+    "Actived": "Active",
+    "Disabled": "Disabled",
+    "Expired": "Expired",
+    "PasswordProtected": "Password Protected"
   },
   "Landing": {
     "settings": "Settings",
@@ -360,14 +380,17 @@
     "Email Code": "Email",
     "Password": "Password",
     "Sign In / Sign Up": "Sign In / Sign Up",
-    "Incorrect email or password": "Incorrect email or password",
+    "Incorrect email or password": "Incorrect email or password, or administrator closed new user registration",
     "Something went wrong": "Something went wrong",
     "Check your email": "Check your email",
     "We sent you a login link": "We sent you a login link",
     "Be sure to check your spam too": "Be sure to check your spam too",
     "Welcome back!": "Welcome back!",
     "Unregistered users will automatically create an account": "Unregistered users will automatically create an account",
-    "Administrator has disabled new user registration": "Administrator has disabled new user registration"
+    "Administrator has disabled new user registration": "Administrator has disabled new user registration",
+    "Email domain not supported, Please use one of the following:": "Email domain not supported. Please use one of the following:",
+    "Auth configuration error": "Auth configuration error",
+    "Unknown error": "Unknown error"
   },
   "System": {
     "MENU": "Menu",
@@ -524,6 +547,13 @@
     "Set Telegram group ID, split by comma if more than one, such as: -10054275724,-10045343642": "Set Telegram group ID, split by comma if more than one, such as: -10054275724,-10045343642",
     "Set Telegram email message template": "设置 Telegram 邮件消息模板",
     "Set Telegram push email white list, split by comma, if not set, will push all emails": "Set Telegram push email white list, split by comma, if not set, will push all emails",
-    "How to configure Telegram bot": "How to configure Telegram bot"
+    "How to configure Telegram bot": "How to configure Telegram bot",
+    "Email Suffix Limit": "Email Suffix Limit",
+    "Enable eamil suffix limit, only works for resend email login and email password login methods": "Enable eamil suffix limit, only works for resend email login and email password login methods",
+    "Need to configure": "Need to configure",
+    "Email Suffix White List": "Email Suffix White List",
+    "Set email suffix white list, split by comma, such as: gmail-com,yahoo-com,hotmail-com": "Set email suffix white list, split by comma, such as: gmail.com,yahoo.com,hotmail.com",
+    "Application Status Email Notifications": "Application Status Email Notifications",
+    "Send email notifications for subdomain application status updates; Notifies administrators when users submit applications and notifies users of approval results; Only available when subdomain application mode is enabled": "Send email notifications for subdomain application status updates; Notifies administrators when users submit applications and notifies users of approval results; Only available when subdomain application mode is enabled"
   }
 }

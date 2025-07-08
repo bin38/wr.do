@@ -143,6 +143,18 @@ pnpm dev
 - Prisma ORM 作为数据库工具
 - Cloudflare 作为主要的云基础设施
 - Vercel 作为推荐的部署平台
+- Resend 作为邮件服务
+
+## Fork 仓库同步
+
+本项目配置了与上游仓库 [oiov/wr.do](https://github.com/oiov/wr.do) 的同步工作流，支持：
+
+- 🔄 **手动触发同步** - 默认关闭自动同步，完全控制同步时机
+- 💬 **同步后自动评论** - 在相关 commit 上添加详细的同步信息
+- 🚨 **智能错误处理** - 同步失败时自动创建详细的 Issue
+- 🧹 **自动清理通知** - 自动关闭之前的同步失败 Issue
+
+前往[如何手动触发同步](https://wr.do/docs/developer/sync)查看详细文档。
 
 ## 社区群组
 
