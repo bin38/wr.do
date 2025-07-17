@@ -16,7 +16,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import useSWR from "swr";
 
-import { siteConfig } from "@/config/site";
 import { ShortUrlFormData } from "@/lib/dto/short-urls";
 import { EXPIRATION_ENUMS } from "@/lib/enums";
 import { fetcher, generateUrlSuffix } from "@/lib/utils";
@@ -47,7 +46,7 @@ export interface RecordFormProps {
   type: FormType;
   initData?: ShortUrlFormData | null;
   action: string;
-  onRefresh: () => void;
+  onRefresh: (id?: string) => void;
 }
 
 export function UrlForm({
@@ -141,10 +140,10 @@ export function UrlForm({
           description: await response.text(),
         });
       } else {
-        // const res = await response.json();
+        const res = await response.json();
         toast.success(`Created successfully!`);
         setShowForm(false);
-        onRefresh();
+        onRefresh(res.id);
       }
     });
   };

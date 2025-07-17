@@ -1,9 +1,11 @@
 "use client";
 
 import * as React from "react";
+import { useState } from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 
 import { cn } from "@/lib/utils";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 const TooltipProvider = TooltipPrimitive.Provider;
 
@@ -38,4 +40,43 @@ export {
   TooltipPortal,
   TooltipProvider,
   TooltipArrow,
+};
+
+export const ClickableTooltip = ({ children, content, className = "" }) => {
+  const [open, setOpen] = useState(false);
+  const { isMobile } = useMediaQuery();
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    setOpen(!open);
+  };
+
+  return (
+    <TooltipProvider>
+      <Tooltip
+        delayDuration={0}
+        open={open}
+        onOpenChange={setOpen}
+        disableHoverableContent
+      >
+        <TooltipTrigger
+          asChild
+          onPointerEnter={(e) => e.preventDefault()} // 阻止指针进入事件
+          onPointerLeave={(e) => e.preventDefault()} // 阻止指针离开事件
+          onPointerMove={(e) => e.preventDefault()} // 阻止指针移动事件
+          onFocus={(e) => e.preventDefault()} // 阻止焦点事件
+          onBlur={(e) => e.preventDefault()}
+        >
+          <div onClick={handleClick} className={className} title="Details">
+            {children}
+          </div>
+        </TooltipTrigger>
+        <TooltipPortal>
+          <TooltipContent className="p-1" side={isMobile ? "bottom" : "right"}>
+            {content}
+          </TooltipContent>
+        </TooltipPortal>
+      </Tooltip>
+    </TooltipProvider>
+  );
 };
