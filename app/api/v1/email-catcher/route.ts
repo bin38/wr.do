@@ -1,5 +1,7 @@
+import { getConfiguredResendDomains } from "@/lib/dto/domains";
 import { OriginalEmail, saveForwardEmail } from "@/lib/dto/email";
 import { getMultipleConfigs } from "@/lib/dto/system-config";
+import { resend } from "@/lib/email";
 
 export async function POST(req: Request) {
   try {
@@ -16,27 +18,12 @@ export async function POST(req: Request) {
       "tg_email_chat_id",
       "tg_email_template",
       "tg_email_target_white_list",
+      "enable_email_forward",
+      "email_forward_targets",
     ]);
 
-    // Catch-all
-    if (configs.enable_email_catch_all) {
-      const validEmails = parseAndValidateEmails(configs.catch_all_emails);
-
-      if (validEmails.length === 0) {
-        return Response.json(
-          { error: "No valid catch-all emails configured" },
-          { status: 400 },
-        );
-      }
-
-      const forwardPromises = validEmails.map((email) =>
-        saveForwardEmail({ ...data, to: email }),
-      );
-
-      await Promise.all(forwardPromises);
-    } else {
-      await saveForwardEmail(data);
-    }
+    // 处理邮件转发和保存
+    await handleEmailForwarding(data, configs);
 
     // Telegram
     if (configs.enable_tg_email_push) {
@@ -54,6 +41,100 @@ export async function POST(req: Request) {
     console.log(error);
     return Response.json({ status: 500 });
   }
+}
+
+async function handleEmailForwarding(data: OriginalEmail, configs: any) {
+  const actions = determineEmailActions(configs);
+
+  const promises: Promise<void>[] = [];
+
+  if (actions.includes("CATCH_ALL")) {
+    promises.push(handleCatchAllEmail(data, configs));
+  }
+
+  if (actions.includes("EXTERNAL_FORWARD")) {
+    promises.push(handleExternalForward(data, configs));
+  }
+
+  if (actions.includes("NORMAL_SAVE")) {
+    promises.push(handleNormalEmail(data));
+  }
+
+  // 并行执行所有操作
+  const results = await Promise.allSettled(promises);
+
+  // 检查是否有失败的操作
+  const failures = results.filter((result) => result.status === "rejected");
+  if (failures.length > 0) {
+    console.error("Some email operations failed:", failures);
+    const firstFailure = failures[0] as PromiseRejectedResult;
+    throw new Error(`Email operation failed: ${firstFailure.reason}`);
+  }
+}
+
+function determineEmailActions(configs: any): string[] {
+  const actions: string[] = [];
+
+  // 检查是否配置了任何转发功能
+  const hasAnyForward =
+    configs.enable_email_catch_all || configs.enable_email_forward;
+
+  if (configs.enable_email_catch_all) {
+    actions.push("CATCH_ALL");
+  }
+
+  if (configs.enable_email_forward) {
+    actions.push("EXTERNAL_FORWARD");
+  }
+
+  // 只有在没有配置任何转发时，才进行正常保存原始邮件
+  if (!hasAnyForward) {
+    actions.push("NORMAL_SAVE");
+  }
+
+  return actions;
+}
+
+async function handleCatchAllEmail(data: OriginalEmail, configs: any) {
+  const validEmails = parseAndValidateEmails(configs.catch_all_emails);
+
+  if (validEmails.length === 0) {
+    throw new Error("No valid catch-all emails configured");
+  }
+
+  // 转发到内部邮箱（保存转发后的邮件）
+  const forwardPromises = validEmails.map((email) =>
+    saveForwardEmail({ ...data, to: email }),
+  );
+
+  await Promise.all(forwardPromises);
+}
+
+async function handleExternalForward(data: OriginalEmail, configs: any) {
+  const validEmails = parseAndValidateEmails(configs.email_forward_targets);
+
+  if (validEmails.length === 0) {
+    throw new Error("No valid forward emails configured");
+  }
+
+  const sender = await getConfiguredResendDomains();
+  if (sender.length === 0) {
+    throw new Error("No configured resend domains");
+  }
+
+  const { error } = await resend.emails.send({
+    from: `forward@${sender[0].domain_name}`,
+    to: validEmails,
+    subject: data.subject ?? "No subject",
+    html: data.html ?? data.text ?? "-",
+  });
+  if (error) {
+    console.log("[Resend Error]", error);
+  }
+}
+
+async function handleNormalEmail(data: OriginalEmail) {
+  await saveForwardEmail(data);
 }
 
 function isValidEmail(email: string): boolean {
