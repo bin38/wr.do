@@ -224,7 +224,11 @@
     "bucketStorageHigh": "存储桶空间使用较多",
     "items": "条",
     "Total": "共",
-    "Configuration Error": "配置错误"
+    "Configuration Error": "配置错误",
+    "Export": "导出",
+    "Export All": "导出所有链接",
+    "Export Active": "导出有效链接",
+    "Export Basic Info": "导出基本信息"
   },
   "Components": {
     "Dashboard": "用户面板",
@@ -338,6 +342,12 @@
     "Last 6 Months": "最近 6 个月",
     "Last 1 Year": "最近 1 年",
     "All the time": "所有时间",
+    "Last 5 Minutes": "最近 5 分钟",
+    "Last 10 Minutes": "最近 10 分钟",
+    "Last 30 Minutes": "最近 30 分钟",
+    "Last 1 Hour": "最近 1 小时",
+    "Last 6 Hours": "最近 6 小时",
+    "Last 12 Hours": "最近 12 小时",
     "No Visits": "无访问记录",
     "You don't have any visits yet in": "您还没有任何访问记录于",
     "System Settings": "系统设置",
@@ -432,7 +442,7 @@
     "Terms of Service": "服务条款",
     "and": "和",
     "Privacy Policy": "隐私政策",
-    "Or continue with": "或使用",
+    "Or continue with": "或",
     "Email": "邮箱",
     "Sign Up with Email": "使用邮箱注册",
     "Sign In with Email": "使用邮箱登录",
@@ -635,6 +645,7 @@
     "Optional": "可选",
     "Max Storage": "最大存储容量",
     "maxStorageTooltip": "设置此存储桶的最大存储容量（字节）。如果不设置，默认使用 Plan 配额的全局限制。",
+    "maxFileSizeTooltip": "设置此存储桶的最大上传文件大小（字节）。如果不设置，则使用 Plan 配额的全局限制。",
     "Allowed File Types": "允许的文件类型",
     "Public": "公开",
     "Publicize this storage bucket, all registered users can upload files to this storage bucket; If not public, only administrators can upload files to this storage bucket": "公开此存储桶，所有注册用户都可以上传文件到此存储桶; 若不公开，只有管理员可以上传文件到此存储桶",
@@ -649,6 +660,8 @@
     "Email Forwarding": "邮件转发",
     "If enabled, forward all received emails to other platform email addresses (Send with Resend)": "如果启用，则将所有收到的电子邮件转发到其他平台邮箱 (使用 Resend 发送)",
     "Forward Email Targets": "目标收件箱",
-    "Set forward email address targets, split by comma if more than one, such as: 1@a-com,2@b-com, Only works when email forwarding is enabled": "设置转发目标邮箱，多个邮件地址请用逗号分隔，例如：1@a.com,2@b.com，仅在启用邮件转发时生效"
+    "Set forward email address targets, split by comma if more than one, such as: 1@a-com,2@b-com, Only works when email forwarding is enabled": "设置转发目标邮箱，多个邮件地址请用逗号分隔，例如：1@a.com,2@b.com，仅在启用邮件转发时生效",
+    "Email Forward White List": "转发邮箱白名单",
+    "Set email forward white list, split by comma, such as: a-wrdo,b-wrdo": "设置转发邮箱白名单(Catch-All 和 Email Forwarding 同时生效)，多个邮箱地址请用逗号分隔，例如：a@wr.do,b@wr.do; 若不设置，则转发所有邮件"
   }
 }

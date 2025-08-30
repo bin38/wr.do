@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 
+import { cn } from "@/lib/utils";
 import { MetaScrapingProps } from "@/app/(protected)/dashboard/scrape/scrapes";
 
 import { Skeleton } from "../ui/skeleton";
@@ -11,7 +12,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import BlurImage from "./blur-image";
+import BlurImage, { BlurImg } from "./blur-image";
 import { Icons } from "./icons";
 
 export function LinkPreviewer({
@@ -112,8 +113,55 @@ export function LinkInfoPreviewer({
     payload: "",
   });
 
+  const isImageUrl = (url: string): boolean => {
+    const imageExtensions = [
+      ".jpg",
+      ".jpeg",
+      ".png",
+      ".gif",
+      ".webp",
+      ".svg",
+      ".bmp",
+      ".ico",
+    ];
+    const urlLower = url.toLowerCase();
+
+    const hasImageExtension = imageExtensions.some((ext) =>
+      urlLower.includes(ext),
+    );
+
+    const imagePatterns = [
+      /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(\?|#|$)/i,
+      /\/image\//i,
+      /\/img\//i,
+      /\/photos?\//i,
+      /\/pictures?\//i,
+    ];
+
+    const matchesPattern = imagePatterns.some((pattern) => pattern.test(url));
+
+    return hasImageExtension || matchesPattern;
+  };
+
   const handleScrapingInfo = async () => {
-    if (url) {
+    if (!url) return;
+
+    if (isImageUrl(url)) {
+      setMetaInfo({
+        title: formatUrl,
+        description: "",
+        image: url,
+        icon: "",
+        url,
+        lang: "",
+        author: "",
+        timestamp: "",
+        payload: "",
+      });
+      return;
+    }
+
+    try {
       const res = await fetch(`/api/v1/scraping/meta?url=${url}&key=${apiKey}`);
       if (!res.ok || res.status !== 200) {
         setMetaInfo({
@@ -131,6 +179,19 @@ export function LinkInfoPreviewer({
         const data = await res.json();
         setMetaInfo({ ...data, title: data.title || url });
       }
+    } catch (error) {
+      console.error("Error fetching meta info:", error);
+      setMetaInfo({
+        title: url,
+        description: "",
+        image: placeholdImage,
+        icon: "",
+        url: "",
+        lang: "",
+        author: "",
+        timestamp: "",
+        payload: "",
+      });
     }
   };
 
@@ -156,27 +217,32 @@ export function LinkInfoPreviewer({
         </TooltipTrigger>
         <TooltipContent
           align="start"
-          className="group flex h-[187px] w-[300px] flex-col items-center justify-center rounded-lg bg-gradient-to-br from-gray-500 to-gray-300 p-0 shadow-inner transition-all duration-200"
+          className="group flex h-[187px] w-[300px] flex-col items-center justify-center rounded-lg bg-gradient-to-br from-gray-300 to-gray-100 p-0 shadow-inner transition-all duration-200"
         >
-          <TooltipArrow className="fill-gray-400" />
+          <TooltipArrow className="fill-gray-300" />
           {metaInfo.title ? (
             <>
-              <BlurImage
-                className="rounded-md bg-primary-foreground group-hover:scale-95 group-hover:opacity-95"
+              <BlurImg
+                className={cn(
+                  "h-full rounded-md bg-primary-foreground group-hover:scale-95 group-hover:opacity-95",
+                  (metaInfo.image === placeholdImage || !metaInfo.image) &&
+                    "w-full",
+                )}
                 src={metaInfo.image || placeholdImage}
                 alt={`Preview of ${url}`}
-                fill
               />
-              <div className="absolute bottom-0 w-full rounded-b-md p-2 backdrop-blur">
-                <p className="line-clamp-1 text-sm font-semibold text-neutral-600 dark:text-neutral-300">
-                  {metaInfo.title}
-                </p>
-                {metaInfo.description && (
-                  <p className="mt-1 line-clamp-1 text-xs text-neutral-500 dark:text-neutral-400">
-                    {metaInfo.description}
+              {!isImageUrl(url) && (
+                <div className="absolute bottom-0 w-full rounded-b-md p-2 backdrop-blur">
+                  <p className="line-clamp-1 text-sm font-semibold text-neutral-600 dark:text-neutral-300">
+                    {metaInfo.title}
                   </p>
-                )}
-              </div>
+                  {metaInfo.description && (
+                    <p className="mt-1 line-clamp-1 text-xs text-neutral-500 dark:text-neutral-400">
+                      {metaInfo.description}
+                    </p>
+                  )}
+                </div>
+              )}
             </>
           ) : (
             <Skeleton className="h-[187px] w-[300px]" />

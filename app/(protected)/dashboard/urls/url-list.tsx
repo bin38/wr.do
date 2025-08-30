@@ -11,12 +11,13 @@ import useSWR, { useSWRConfig } from "swr";
 
 import { ShortUrlFormData } from "@/lib/dto/short-urls";
 import {
+  addUrlPrefix,
   cn,
   expirationTime,
   extractHostname,
   fetcher,
   nFormatter,
-  removeUrlSuffix,
+  removeUrlPrefix,
 } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
@@ -60,6 +61,7 @@ import { PaginationWrapper } from "@/components/shared/pagination";
 import QRCodeEditor from "@/components/shared/qr";
 import { TimeAgoIntl } from "@/components/shared/time-ago";
 
+import { UrlExporter } from "./export";
 import Globe from "./globe";
 import LiveLog from "./live-logs";
 import UserUrlMetaInfo from "./meta";
@@ -364,8 +366,8 @@ export default function UserUrlsList({ user, action }: UrlListProps) {
                 <TableCell className="col-span-1 flex items-center justify-start sm:col-span-2">
                   <LinkInfoPreviewer
                     apiKey={user.apiKey ?? ""}
-                    url={short.target}
-                    formatUrl={removeUrlSuffix(short.target)}
+                    url={addUrlPrefix(short.target)}
+                    formatUrl={removeUrlPrefix(short.target)}
                   />
                 </TableCell>
                 <TableCell className="col-span-1 hidden truncate sm:flex">
@@ -529,7 +531,7 @@ export default function UserUrlsList({ user, action }: UrlListProps) {
                       <LinkInfoPreviewer
                         apiKey={user.apiKey ?? ""}
                         url={short.target}
-                        formatUrl={removeUrlSuffix(short.target)}
+                        formatUrl={removeUrlPrefix(short.target)}
                       />
                     </div>
                   </div>
@@ -696,6 +698,7 @@ export default function UserUrlsList({ user, action }: UrlListProps) {
           </TabsList>
           {/* <p>Total: {data?.total || 0}</p> */}
           <div className="ml-auto flex items-center justify-end gap-3">
+            <UrlExporter data={data?.list || []} />
             <Button
               variant={"outline"}
               onClick={() => handleRefresh()}
