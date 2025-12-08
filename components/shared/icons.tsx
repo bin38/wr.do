@@ -7,6 +7,8 @@ import {
   ArrowUpRight,
   BookOpen,
   BotMessageSquare,
+  Boxes,
+  Braces,
   Bug,
   Calendar,
   Camera,
@@ -16,16 +18,21 @@ import {
   ChevronLeft,
   ChevronRight,
   CirclePlay,
+  Clock,
   CloudUpload,
   Code,
+  Cog,
   Copy,
   Crown,
+  DatabaseZap,
   Download,
   EllipsisVertical,
+  Eraser,
   Eye,
   File,
   FileText,
   GlobeLock,
+  Hand,
   Heading1,
   HelpCircle,
   Home,
@@ -33,6 +40,7 @@ import {
   Inbox,
   Info,
   Laptop,
+  Layers,
   LayoutGrid,
   LayoutPanelLeft,
   Link,
@@ -49,16 +57,20 @@ import {
   MailPlus,
   MessageSquareQuote,
   MessagesSquare,
+  MonitorDown,
   Moon,
   MoreVertical,
   Package,
   Paintbrush,
   Plus,
+  Puzzle,
   QrCode,
   RefreshCw,
+  ScanQrCode,
   Search,
   Send,
   Settings,
+  ShieldCheck,
   SunMedium,
   Trash2,
   Type,
@@ -87,15 +99,45 @@ export const Icons = {
   chevronRight: ChevronRight,
   chevronDown: ChevronDown,
   bookOpen: BookOpen,
+  braces: Braces,
   check: Check,
   checkCheck: CheckCheck,
   close: X,
   code: Code,
   copy: Copy,
+  clock: Clock,
+  cog: Cog,
   type: Type,
   camera: Camera,
   calendar: Calendar,
   crown: Crown,
+  eraser: Eraser,
+  puzzle: Puzzle,
+  hand: Hand,
+  scanQrCode: ScanQrCode,
+  monitorDown: MonitorDown,
+  shieldCheck: ShieldCheck,
+  layers: Layers,
+  databaseZap: DatabaseZap,
+  boxes: Boxes,
+  shieldUser: ({ ...props }: LucideProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      {...props}
+    >
+      <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+      <path d="M6.376 18.91a6 6 0 0 1 11.249.003" />
+      <circle cx="12" cy="11" r="4" />
+    </svg>
+  ),
   cloudUpload: ({ ...props }: LucideProps) => (
     <svg
       role="presentation"
@@ -618,6 +660,20 @@ export const Icons = {
           <stop offset="1" stopColor="white" stopOpacity="0"></stop>
         </linearGradient>
       </defs>
+    </svg>
+  ),
+  brevo: ({ ...props }: LucideProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="128"
+      height="128"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="#059669"
+        d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12a12 12 0 0 0 12-12A12 12 0 0 0 12 0M7.2 4.8h5.747c2.34 0 3.895 1.406 3.895 3.516c0 1.022-.348 1.862-1.09 2.588C17.189 11.812 18 13.22 18 14.785c0 2.86-2.64 5.016-6.164 5.016H7.199v-15zm2.085 1.952v5.537h.07c.233-.432.858-.796 2.249-1.226c2.039-.659 3.037-1.52 3.037-2.655c0-.998-.766-1.656-1.924-1.656zm4.87 5.266c-.766.385-1.67.748-2.76 1.11c-1.229.387-2.11 1.386-2.11 2.407v2.315h2.365c2.387 0 4.149-1.34 4.149-3.155c0-1.067-.625-2.087-1.645-2.677z"
+      />
     </svg>
   ),
   disabledLink: ({ ...props }: LucideProps) => (

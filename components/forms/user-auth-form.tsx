@@ -210,14 +210,14 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
   const rendeCredentials = () =>
     loginMethod["credentials"] && (
       <form onSubmit={handleSubmit2(onSubmitPwd)}>
-        <div className="grid gap-2">
+        <div className="grid gap-3">
           <div className="grid gap-1">
             <Label className="sr-only" htmlFor="email">
               Email
             </Label>
             <Input
               id="email"
-              placeholder="name@example.com"
+              placeholder="email@example.com"
               type="email"
               autoCapitalize="none"
               autoComplete="email"
@@ -262,9 +262,9 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
             {t("Sign In / Sign Up")}
           </Button>
 
-          <p className="rounded-md border border-dashed bg-muted px-3 py-2 text-xs text-muted-foreground">
+          {/* <p className="rounded-md border border-dashed bg-muted px-3 py-2 text-xs text-muted-foreground">
             📢 {t("Unregistered users will automatically create an account")}.
-          </p>
+          </p> */}
         </div>
       </form>
     );
@@ -276,6 +276,14 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
           📢 {t("Administrator has disabled new user registration")}.
         </p>
       )}
+
+      {loginMethod["credentials"] && <>{rendeCredentials()}</>}
+
+      {(loginMethod["google"] ||
+        loginMethod["github"] ||
+        loginMethod["linuxdo"]) &&
+        (loginMethod["resend"] || loginMethod["credentials"]) &&
+        rendeSeparator()}
 
       {loginMethod["google"] && (
         <Button
@@ -354,13 +362,7 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
         </Button>
       )}
 
-      {(loginMethod["google"] ||
-        loginMethod["github"] ||
-        loginMethod["linuxdo"]) &&
-        (loginMethod["resend"] || loginMethod["credentials"]) &&
-        rendeSeparator()}
-
-      {loginMethod["resend"] && loginMethod["credentials"] ? (
+      {/* {loginMethod["resend"] && loginMethod["credentials"] ? (
         <Tabs defaultValue="resend">
           <TabsList className="mb-2 w-full justify-center">
             <TabsTrigger value="resend">{t("Email Code")}</TabsTrigger>
@@ -374,7 +376,7 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
           {rendeResend()}
           {rendeCredentials()}
         </>
-      )}
+      )} */}
     </div>
   );
 }

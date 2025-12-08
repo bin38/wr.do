@@ -24,28 +24,6 @@ export default async function DashboardPage() {
       <DashboardHeader heading="System Settings" text="" />
       <AppConfigs />
       <S3Configs />
-      <DomainList
-        user={{
-          id: user.id,
-          name: user.name || "",
-          apiKey: user.apiKey || "",
-          email: user.email || "",
-          role: user.role,
-          team: user.team,
-        }}
-        action="/api/admin/domain"
-      />
-      <PlanList
-        user={{
-          id: user.id,
-          name: user.name || "",
-          apiKey: user.apiKey || "",
-          email: user.email || "",
-          role: user.role,
-          team: user.team,
-        }}
-        action="/api/admin/plan"
-      />
     </>
   );
 }

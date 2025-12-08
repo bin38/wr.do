@@ -1,7 +1,7 @@
-import { getConfiguredResendDomains } from "@/lib/dto/domains";
+import { getConfiguredEmailDomains } from "@/lib/dto/domains";
 import { OriginalEmail, saveForwardEmail } from "@/lib/dto/email";
 import { getMultipleConfigs } from "@/lib/dto/system-config";
-import { resend } from "@/lib/email";
+import { brevoSendEmail } from "@/lib/email/brevo";
 
 export async function POST(req: Request) {
   try {
@@ -141,20 +141,19 @@ async function handleExternalForward(data: OriginalEmail, configs: any) {
     throw new Error("No valid forward emails configured");
   }
 
-  const sender = await getConfiguredResendDomains();
-  if (sender.length === 0) {
+  const senders = await getConfiguredEmailDomains();
+  if (senders.length === 0) {
     throw new Error("No configured resend domains");
   }
 
-  const { error } = await resend.emails.send({
-    from: `Forwarding@${sender[0].domain_name}`,
+  const options = {
+    from: `Forwarding@${senders[0].domain_name}`,
     to: validEmails,
     subject: data.subject ?? "No subject",
     html: `${data.html ?? data.text} <br><hr><p style="font-size: '12px'; color: '#888'; font-family: 'monospace';text-align: 'center'">This email was forwarded from ${data.to}. Powered by <a href="https://wr.do">WR.DO</a>.</p>`,
-  });
-  if (error) {
-    console.log("[Resend Error]", error);
-  }
+  };
+
+  await brevoSendEmail(options);
 }
 
 async function handleNormalEmail(data: OriginalEmail) {
@@ -289,29 +288,29 @@ function formatEmailForTelegram(
       .replace("{{from}}", fromInfo)
       .replace("{{to}}", email.to)
       .replace("{{subject}}", email.subject || "No Subject")
-      .replace("{{text}}", email.text || "No content")
-      .replace("{{date}}", email.date || "--");
+      .replace("{{text}}", email.html || email.text || "No Content")
+      .replace("{{date}}", new Date(email.date || "").toLocaleString() || "--");
   }
 
   const subject = email.subject || "No Subject";
   const content =
-    email.text || email.html?.replace(/<[^>]*>/g, "") || "No content";
+    email.text || email.html?.replace(/<[^>]*>/g, "") || "No Content";
 
-  const date = email.date || "Unknown date";
+  const date = new Date(email.date || "").toLocaleString() || "--";
 
   // 限制内容长度
-  const maxContentLength = 2000;
+  const maxContentLength = 3800; // Maximum Telegram message length is 4096
   const truncatedContent =
     content.length > maxContentLength
       ? content.substring(0, maxContentLength) + "..."
       : content;
 
-  let message = `📧 *New Email*\n\n`;
+  let message = `📮 *New Email*\n\n`;
   message += `*From:* \`${fromInfo}\`\n`;
   message += `*To:* \`${email.to}\`\n`;
   message += `*Subject:* ${subject}\n`;
-  message += `*Date:* ${date}\n`;
-  message += `\n\`\`\`Content\n${truncatedContent}\n\`\`\``;
+  message += `*Date:* ${new Date(date).toLocaleString()}\n`;
+  message += `*Content:* \n${truncatedContent}`;
 
   return message;
 }

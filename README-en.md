@@ -12,7 +12,8 @@
   <img alt="GitHub forks" src="https://img.shields.io/github/forks/oiov/wr.do?style=flat-square">
   <img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues/oiov/wr.do?style=flat-square"> <br>
   <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/oiov/wr.do/docker-build-push.yml?style=flat-square">
-	<img src="https://img.shields.io/github/license/oiov/wr.do?style=flat-square" alt="MIT"/>
+	<img src="https://img.shields.io/github/license/oiov/wr.do?style=flat-square" alt="MIT"/><br><br>
+  <img width="15" src="https://storage.wr.do/2025/11/20/561763627504_.pic.jpg" /> 免费体验 Sora AI 视频生成 👉 <a href="https://sora.hk/i/5KY5N1FL">点击注册</a> 
 </div>
 
 ## Screenshots
@@ -33,8 +34,6 @@
 </table>
 
 ## Features
-
-- Demo: [https://699399.xyz](https://699399.xyz) (Account: `admin@admin.com`, Password: `123456`)
 
 - 🔗 **Short Link Service**:
   - Custom short links

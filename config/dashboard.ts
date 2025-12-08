@@ -9,13 +9,42 @@ export const sidebarLinks: SidebarNavItem[] = [
     title: "MENU",
     items: [
       { href: "/dashboard", icon: "dashboard", title: "Dashboard" },
-      { href: "/dashboard/urls", icon: "link", title: "Short Urls" },
-      { href: "/dashboard/records", icon: "globe", title: "DNS Records" },
-      { href: "/emails", icon: "mail", title: "Emails" },
       {
-        href: "/dashboard/storage",
+        href: "",
+        icon: "link",
+        title: "Short Urls",
+        items: [
+          { href: "/dashboard/urls", title: "Links" },
+          { href: "/dashboard/urls/analytics", title: "Analytics" },
+          { href: "/dashboard/urls/logs", title: "Ip Logs" },
+          { href: "/dashboard/urls/api", title: "API" },
+        ],
+      },
+      { href: "/dashboard/records", icon: "globe", title: "DNS Records" },
+      {
+        href: "",
+        icon: "mail",
+        title: "Emails",
+        items: [
+          { href: "/emails", title: "Inbox" },
+          { href: "/emails/sent", title: "Sent" },
+          { href: "/emails/trash", title: "Trash", disabled: true },
+          { href: "/emails/api", title: "API", disabled: true },
+        ],
+      },
+      {
+        href: "",
         icon: "storage",
         title: "Cloud Storage",
+        items: [
+          { href: "/dashboard/storage", title: "Storage" },
+          {
+            href: "/dashboard/storage/analytics",
+            title: "File Analytics",
+            disabled: true,
+          },
+          { href: "/dashboard/storage/api", title: "API", disabled: true },
+        ],
       },
     ],
   },
@@ -24,28 +53,31 @@ export const sidebarLinks: SidebarNavItem[] = [
     items: [
       {
         href: "/dashboard/scrape",
-        icon: "bug",
+        icon: "layers",
         title: "Overview",
       },
       {
-        href: "/dashboard/scrape/screenshot",
-        icon: "camera",
-        title: "Screenshot",
-      },
-      {
-        href: "/dashboard/scrape/qrcode",
-        icon: "qrcode",
-        title: "QR Code",
-      },
-      {
-        href: "/dashboard/scrape/meta-info",
-        icon: "globe",
-        title: "Meta Info",
-      },
-      {
-        href: "/dashboard/scrape/markdown",
-        icon: "fileText",
-        title: "Markdown",
+        href: "",
+        icon: "bug",
+        title: "APIs",
+        items: [
+          {
+            href: "/dashboard/scrape/screenshot",
+            title: "Screenshot",
+          },
+          {
+            href: "/dashboard/scrape/qrcode",
+            title: "QR Code",
+          },
+          {
+            href: "/dashboard/scrape/meta-info",
+            title: "Meta Info",
+          },
+          {
+            href: "/dashboard/scrape/markdown",
+            title: "Markdown",
+          },
+        ],
       },
     ],
   },
@@ -65,28 +97,88 @@ export const sidebarLinks: SidebarNavItem[] = [
         authorizeOnly: UserRole.ADMIN,
       },
       {
-        href: "/admin/urls",
-        icon: "link",
-        title: "URLs",
+        href: "/admin/resources",
+        icon: "boxes",
+        title: "Resources",
         authorizeOnly: UserRole.ADMIN,
+        items: [
+          {
+            href: "",
+            title: "URLs",
+            authorizeOnly: UserRole.ADMIN,
+            items: [
+              {
+                href: "/admin/urls",
+                title: "List",
+                authorizeOnly: UserRole.ADMIN,
+              },
+              {
+                href: "/admin/urls/analytics",
+                title: "Analytics",
+                authorizeOnly: UserRole.ADMIN,
+              },
+              {
+                href: "/admin/urls/logs",
+                title: "Ip Logs",
+                authorizeOnly: UserRole.ADMIN,
+              },
+            ],
+          },
+          // {
+          //   href: "/admin/emails",
+          //   // icon: "globe",
+          //   title: "Emails",
+          //   authorizeOnly: UserRole.ADMIN,
+          //   items: [
+          //     {
+          //       href: "/admin/emails/sent",
+          //       title: "Sent",
+          //       authorizeOnly: UserRole.ADMIN,
+          //     },
+          //     {
+          //       href: "/admin/emails/trash",
+          //       title: "Trash",
+          //       authorizeOnly: UserRole.ADMIN,
+          //       disabled: true,
+          //     },
+          //   ],
+          // },
+          {
+            href: "/admin/records",
+            // icon: "globe",
+            title: "Records",
+            authorizeOnly: UserRole.ADMIN,
+          },
+          {
+            href: "/admin/storage",
+            // icon: "storage",
+            title: "Cloud Storage Manage",
+            authorizeOnly: UserRole.ADMIN,
+          },
+        ],
       },
       {
-        href: "/admin/records",
-        icon: "globe",
-        title: "Records",
-        authorizeOnly: UserRole.ADMIN,
-      },
-      {
-        href: "/admin/storage",
-        icon: "storage",
-        title: "Cloud Storage Manage",
-        authorizeOnly: UserRole.ADMIN,
-      },
-      {
-        href: "/admin/system",
+        href: "",
         icon: "settings",
         title: "System Settings",
         authorizeOnly: UserRole.ADMIN,
+        items: [
+          {
+            href: "/admin/system",
+            title: "App Configs",
+            authorizeOnly: UserRole.ADMIN,
+          },
+          {
+            href: "/admin/system/domains",
+            title: "Domains",
+            authorizeOnly: UserRole.ADMIN,
+          },
+          {
+            href: "/admin/system/plans",
+            title: "Plans",
+            authorizeOnly: UserRole.ADMIN,
+          },
+        ],
       },
     ],
   },

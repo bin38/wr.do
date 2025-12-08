@@ -3,7 +3,7 @@
   <h1>WR.DO</h1>
   <p>一站式域名服务平台，集成短链服务、临时邮箱、子域名管理、文件存储和开放API接口。</p>
   <p>
-    <a href="https://wr.do">官网</a> · <a href="https://wr.do/docs/developer">部署文档</a> · <a href="https://wr.do/feedback">反馈讨论</a> · <a href="/README-en.md">English</a> | 简体中文
+    <a href="https://like.do">官方站点</a> · <a href="https://wr.do/docs/developer">部署文档</a> · <a href="https://wr.do/feedback">反馈讨论</a> · <a href="/README-en.md">English</a> | 简体中文
   </p>
   <img alt="Vercel" src="https://img.shields.io/badge/vercel-online-55b467?labelColor=black&logo=vercel&style=flat-square">
   <img alt="Release" src="https://img.shields.io/github/actions/workflow/status/oiov/wr.do/docker-build-push.yml?label=release&labelColor=black&logo=githubactions&logoColor=white&style=flat-square">
@@ -14,8 +14,17 @@
   <img alt="GitHub forks" src="https://img.shields.io/github/forks/oiov/wr.do?style=flat-square">
   <img alt="GitHub Issues or Pull Requests" src="https://img.shields.io/github/issues/oiov/wr.do?style=flat-square"> <br>
   <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/oiov/wr.do/docker-build-push.yml?style=flat-square">
-	<img src="https://img.shields.io/github/license/oiov/wr.do?style=flat-square" alt="MIT"/>
+	<img src="https://img.shields.io/github/license/oiov/wr.do?style=flat-square" alt="MIT"/><br><br>
+  <img width="15" src="https://storage.wr.do/2025/11/20/561763627504_.pic.jpg" /> 免费体验 Sora AI 视频生成 👉 <a href="https://sora.hk/i/5KY5N1FL">点击注册</a>
 </div>
+
+<br/>
+
+> 注意：开源版域名 wr.do 已至官方运营版 like.do，本次迁移仅迁移用户短链以及用户邮箱数据（不包括收件箱数据），若您在 wr.do 创建了相关资源，请在 like.do 注册账户后，前往 [migrate-wrdo](https://like.do/dashboard/migrate-wrdo) 填写您的历史数据信息自动迁移，后续开源版演示域名变更为 https://likedo.vercel.app
+> 
+> 🎉 官方运营版主要功能与开源版保持一致，新增 AI 补全短链信息，支持创建专属私有子域名作为短链域名；AI 回复邮件、自动生成邮件模板、用户可单独设置邮箱转发地址等新特性，前往体验 👉 [like.do](https://like.do)
+
+
 
 ## 截图预览
 
@@ -36,8 +45,6 @@
 
 
 ## 功能列表
-
-> Demo: [https://699399.xyz](https://699399.xyz) (管理员账号: `admin@admin.com`, 密码: `123456`)
 
 <details>
 <summary><strong> 🔗 短链服务</strong> - <a href="javascript:;">[功能列表]</a></summary>
@@ -222,6 +229,13 @@ pnpm dev
   <img src="https://contrib.rocks/image?repo=oiov/wr.do" />
 </a>
 
+## 请作者喝咖啡
+  
+[爱发电主页打赏](wr.do/afdhome)
+
+<img width="100" src="https://wr.do/bbpt9z?ref=https://github.com/oiov/wr.do" />
+
+
 ## Star History
 
 <a href="https://star-history.com/#oiov/wr.do&Date">
@@ -235,3 +249,6 @@ pnpm dev
 ## 开源协议
 
 [MIT](/LICENSE.md)
+
+
+

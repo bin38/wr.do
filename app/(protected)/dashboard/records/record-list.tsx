@@ -33,6 +33,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  ClickableTooltip,
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -88,7 +89,7 @@ export default function UserRecordsList({ user, action }: RecordListProps) {
   const [currentEditRecord, setCurrentEditRecord] =
     useState<UserRecordFormData | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(15);
   const isAdmin = action.includes("/admin");
 
   const t = useTranslations("List");
@@ -154,7 +155,7 @@ export default function UserRecordsList({ user, action }: RecordListProps) {
             <div className="grid gap-2">
               <CardTitle>{t("Subdomain List")}</CardTitle>
               <CardDescription className="hidden text-balance sm:block">
-                {t("Before using please read the")}{" "}
+                {t("Before using please read the")}
                 <Link
                   target="_blank"
                   className="font-semibold text-yellow-600 after:content-['↗'] hover:underline"
@@ -162,14 +163,14 @@ export default function UserRecordsList({ user, action }: RecordListProps) {
                 >
                   {t("legitimacy review")}
                 </Link>
-                . {t("See")}{" "}
+                . {t("See")}
                 <Link
                   target="_blank"
                   className="text-blue-500 hover:underline"
                   href="/docs/examples/vercel"
                 >
                   {t("examples")}
-                </Link>{" "}
+                </Link>
                 {t("for more usage")}.
               </CardDescription>
             </div>
@@ -347,17 +348,17 @@ export default function UserRecordsList({ user, action }: RecordListProps) {
                       )}
                     </TableCell>
                     <TableCell className="col-span-1 hidden truncate sm:flex">
-                      <TooltipProvider>
-                        <Tooltip delayDuration={200}>
-                          <TooltipTrigger className="truncate">
-                            {record.user.name ?? record.user.email}
-                          </TooltipTrigger>
-                          <TooltipContent>
+                      <ClickableTooltip
+                        className="cursor-pointer truncate"
+                        content={
+                          <div className="px-2 py-1">
                             <p>{record.user.name}</p>
-                            <p>{record.user.email}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
+                            <p>{record.user?.email}</p>
+                          </div>
+                        }
+                      >
+                        {record.user.name || record.user.email}
+                      </ClickableTooltip>
                     </TableCell>
                     <TableCell className="col-span-1 hidden justify-center sm:flex">
                       <TimeAgoIntl

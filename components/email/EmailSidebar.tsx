@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { User, UserEmail } from "@prisma/client";
 import randomName from "@scaleway/random-name";
 import {
@@ -45,7 +45,6 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { SendEmailModal } from "./SendEmailModal";
-import SendsEmailList from "./SendsEmailList";
 
 interface EmailSidebarProps {
   user: User;
@@ -83,9 +82,7 @@ export default function EmailSidebar({
   const [currentPage, setCurrentPage] = useState(1);
   const [onlyUnread, setOnlyUnread] = useState(false);
 
-  const [showSendsModal, setShowSendsModal] = useState(false);
-
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(15);
 
   const { data, isLoading, error, mutate } = useSWR<{
     list: UserEmailList[];
@@ -96,14 +93,6 @@ export default function EmailSidebar({
     `/api/email?page=${currentPage}&size=${pageSize}&search=${searchQuery}&all=${isAdminModel}&unread=${onlyUnread}`,
     fetcher,
     { dedupingInterval: 5000 },
-  );
-
-  const { data: sendEmails } = useSWR<number>(
-    `/api/email/send?all=${isAdminModel}`,
-    fetcher,
-    {
-      dedupingInterval: 5000,
-    },
   );
 
   const { data: emailDomains, isLoading: isLoadingDomains } = useSWR<
@@ -348,6 +337,7 @@ export default function EmailSidebar({
                   "bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-gray-700":
                     onlyUnread,
                 },
+                { "col-span-2": user.role !== "ADMIN" },
               )}
               onClick={() => {
                 setOnlyUnread(!onlyUnread);
@@ -372,37 +362,31 @@ export default function EmailSidebar({
               </TooltipProvider>
             </div>
 
-            {/* Sent Emails */}
-            <div
-              onClick={() => setShowSendsModal(!showSendsModal)}
-              className={cn(
-                "flex cursor-pointer flex-col items-center gap-1 rounded-md bg-neutral-100 px-1 pb-1 pt-2 transition-colors hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-gray-700",
-                {
-                  "bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-gray-700":
-                    showSendsModal,
-                },
-              )}
-            >
-              <div className="flex items-center gap-1">
-                <Icons.send className="size-3" />
-                <p className="line-clamp-1 text-start font-medium">
-                  {t("Sent Emails")}
-                </p>
+            {/* Admin Mode */}
+            {user.role === "ADMIN" && (
+              <div
+                onClick={() => setAdminModel(!isAdminModel)}
+                className={cn(
+                  "flex cursor-pointer flex-col items-center gap-1 rounded-md bg-neutral-100 px-1 pb-1 pt-2 transition-colors hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-gray-700",
+                  {
+                    "bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-gray-700":
+                      isAdminModel,
+                  },
+                )}
+              >
+                <div className="flex items-center gap-1">
+                  <Icons.lock className="size-3" />
+                  <p className="line-clamp-1 text-start font-medium">
+                    {t("Admin Mode")}
+                  </p>
+                </div>
+                <Switch
+                  className="scale-90"
+                  checked={isAdminModel}
+                  onCheckedChange={(v) => setAdminModel(v)}
+                />
               </div>
-              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                {nFormatter(sendEmails || 0)}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {!isCollapsed && user.role === "ADMIN" && (
-          <div className="mt-2 flex items-center gap-2 text-sm">
-            {t("Admin Mode")}:{" "}
-            <Switch
-              defaultChecked={isAdminModel}
-              onCheckedChange={(v) => setAdminModel(v)}
-            />
+            )}
           </div>
         )}
       </div>
@@ -567,16 +551,6 @@ export default function EmailSidebar({
           pageSize={pageSize}
           layout="center"
         />
-      )}
-
-      {showSendsModal && (
-        <Modal
-          className="md:max-w-2xl"
-          showModal={showSendsModal}
-          setShowModal={setShowSendsModal}
-        >
-          <SendsEmailList isAdminModel={isAdminModel} />
-        </Modal>
       )}
 
       {/* 创建\编辑邮箱的 Modal */}
