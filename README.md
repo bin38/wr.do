@@ -1,9 +1,9 @@
 <div align="center">
-  <img src="https://wr.do/_static/images/x-preview.png" alt="WR.DO" >
+  <img src="https://likedo.vercel.app/_static/images/x-preview.png" alt="WR.DO" >
   <h1>WR.DO</h1>
   <p>一站式域名服务平台，集成短链服务、临时邮箱、子域名管理、文件存储和开放API接口。</p>
   <p>
-    <a href="https://like.do">官方站点</a> · <a href="https://wr.do/docs/developer">部署文档</a> · <a href="https://wr.do/feedback">反馈讨论</a> · <a href="/README-en.md">English</a> | 简体中文
+    <a href="https://like.do">官方站点</a> · <a href="https://likedo.vercel.app/docs/developer">部署文档</a> · <a href="https://likedo.vercel.app/feedback">反馈讨论</a> · <a href="/README-en.md">English</a> | 简体中文
   </p>
   <img alt="Vercel" src="https://img.shields.io/badge/vercel-online-55b467?labelColor=black&logo=vercel&style=flat-square">
   <img alt="Release" src="https://img.shields.io/github/actions/workflow/status/oiov/wr.do/docker-build-push.yml?label=release&labelColor=black&logo=githubactions&logoColor=white&style=flat-square">
@@ -18,11 +18,30 @@
   <img width="15" src="https://storage.wr.do/2025/11/20/561763627504_.pic.jpg" /> 免费体验 Sora AI 视频生成 👉 <a href="https://sora.hk/i/5KY5N1FL">点击注册</a>
 </div>
 
-<br/>
+## 📢 重要通知：推出官方运营版 LikeDo
 
-> 注意：开源版域名 wr.do 已至官方运营版 like.do，本次迁移仅迁移用户短链以及用户邮箱数据（不包括收件箱数据），若您在 wr.do 创建了相关资源，请在 like.do 注册账户后，前往 [migrate-wrdo](https://like.do/dashboard/migrate-wrdo) 填写您的历史数据信息自动迁移，后续开源版演示域名变更为 https://likedo.vercel.app
-> 
-> 🎉 官方运营版主要功能与开源版保持一致，新增 AI 补全短链信息，支持创建专属私有子域名作为短链域名；AI 回复邮件、自动生成邮件模板、用户可单独设置邮箱转发地址等新特性，前往体验 👉 [like.do](https://like.do)
+经过一年的开源运营，WR.DO 已积累了稳定的用户基础和成熟的技术条件。**为了持续维护和提供更好的服务**，我们正式推出官方运营版 **LikeDo**。
+
+### 🔄 版本说明
+
+- **开源版 WR.DO**：将继续维护，演示域名变更为 https://likedo.vercel.app
+- **官方运营版 LikeDo**：独立数据库运营，域名为 https://like.do
+
+### ✨ LikeDo 新增功能
+
+- **短链增强**：AI 智能补全短链信息、支持创建专属私有子域名
+- **邮箱升级**：AI 智能回复邮件、自动生成邮件模板、独立设置转发地址
+- 更完善的用户交互体验
+
+### 📦 数据迁移指南
+
+如果您在 WR.DO 创建过资源，请按以下步骤迁移：
+
+1. 在 [like.do](https://like.do) 注册账户
+2. 前往 [数据迁移页面](https://like.do/dashboard/migrate-wrdo) 填写历史数据信息
+3. 系统将自动迁移您的短链和邮箱账户（不包括收件箱历史数据）
+
+立即体验官方运营版 👉 [like.do](https://like.do)
 
 
 
@@ -30,16 +49,16 @@
 
 <table>
   <tr>
-    <td><img src="https://wr.do/_static/images/light-preview.png" /></td>
-    <td><img src="https://wr.do/_static/images/example_02.png" /></td>
+    <td><img src="https://likedo.vercel.app/_static/images/light-preview.png" /></td>
+    <td><img src="https://likedo.vercel.app/_static/images/example_02.png" /></td>
   </tr>
   <tr>
-    <td><img src="https://wr.do/_static/images/example_01.png" /></td>
-    <td><img src="https://wr.do/_static/images/realtime-globe.png" /></td>
+    <td><img src="https://likedo.vercel.app/_static/images/example_01.png" /></td>
+    <td><img src="https://likedo.vercel.app/_static/images/realtime-globe.png" /></td>
   </tr>
   <tr>
-    <td><img src="https://wr.do/_static/images/example_03.png" /></td>
-    <td><img src="https://wr.do/_static/images/domains.png" /></td>
+    <td><img src="https://likedo.vercel.app/_static/images/example_03.png" /></td>
+    <td><img src="https://likedo.vercel.app/_static/images/domains.png" /></td>
   </tr>
 </table>
 
@@ -132,7 +151,7 @@
 
 ## 快速开始
 
-查看开发者[手把手部署教程](https://wr.do/docs/developer/quick-start-zh)文档。
+查看开发者[手把手部署教程](https://likedo.vercel.app/docs/developer/quick-start-zh)文档。
 
 ## 自部署教程
 
@@ -203,7 +222,7 @@ pnpm dev
 
 ## 环境变量
 
-查看 [开发者文档](https://wr.do/docs/developer).
+查看 [开发者文档](https://likedo.vercel.app/docs/developer).
 
 ## Fork 仓库同步
 
@@ -214,7 +233,7 @@ pnpm dev
 - 🚨 **智能错误处理** - 同步失败时自动创建详细的 Issue
 - 🧹 **自动清理通知** - 自动关闭之前的同步失败 Issue
 
-前往[如何手动触发同步](https://wr.do/docs/developer/sync)查看详细文档。
+前往[如何手动触发同步](https://likedo.vercel.app/docs/developer/sync)查看详细文档。
 
 ## 社区群组
 
@@ -249,6 +268,7 @@ pnpm dev
 ## 开源协议
 
 [MIT](/LICENSE.md)
+
 
 
 
